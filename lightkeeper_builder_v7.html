@@ -1,0 +1,448 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .builder { display: grid; grid-template-columns: 290px 1fr; height: 640px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+  .sidebar { background: var(--color-background-secondary); border-right: 0.5px solid var(--color-border-tertiary); overflow-y: auto; display: flex; flex-direction: column; }
+  .sidebar-header { padding: 16px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .brand-name { font-size: 11px; letter-spacing: 0.15em; color: var(--color-text-tertiary); text-transform: uppercase; margin-bottom: 4px; }
+  .section-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+  .category { padding: 12px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .cat-label { font-size: 11px; letter-spacing: 0.1em; color: var(--color-text-tertiary); text-transform: uppercase; margin-bottom: 8px; }
+  .parts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .part-btn { aspect-ratio: 1; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; padding: 6px; overflow: hidden; }
+  .part-btn:hover { border-color: var(--color-border-primary); }
+  .part-btn.selected { border: 1.5px solid var(--color-text-primary); }
+  .part-btn svg { width: 100%; height: 100%; }
+  .ctrl-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .ctrl-label { font-size: 12px; color: var(--color-text-secondary); width: 32px; flex-shrink: 0; }
+  .ctrl-row input[type=range] { flex: 1; }
+  .ctrl-val { font-size: 12px; color: var(--color-text-primary); min-width: 36px; text-align: right; }
+  .canvas-area { background: var(--color-background-primary); display: flex; flex-direction: column; }
+  .canvas-header { padding: 12px 20px; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; }
+  .canvas-title { font-size: 13px; color: var(--color-text-secondary); }
+  .action-btns { display: flex; gap: 8px; }
+  .action-btn { font-size: 12px; padding: 6px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; cursor: pointer; color: var(--color-text-primary); }
+  .action-btn:hover { background: var(--color-background-secondary); }
+  .canvas-wrap { flex: 1; display: flex; align-items: center; justify-content: center; }
+  .tab-row { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .tab { flex: 1; padding: 8px; font-size: 12px; color: var(--color-text-secondary); border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); font-weight: 500; }
+  .ctrl-section { display: none; }
+  .ctrl-section.active { display: block; }
+  .ctrl-group { padding: 12px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .tip { font-size: 11px; color: var(--color-text-tertiary); padding: 12px 16px; line-height: 1.5; }
+  .btn-group { display: flex; gap: 6px; }
+  .tog-btn { flex: 1; padding: 6px 8px; font-size: 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-background-primary); cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; }
+  .tog-btn:hover { border-color: var(--color-border-primary); color: var(--color-text-primary); }
+  .tog-btn.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+  .wing-slot { border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .wing-slot-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; cursor: pointer; user-select: none; }
+  .wing-slot-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+  .wing-slot-actions { display: flex; gap: 6px; align-items: center; }
+  .slot-action-btn { font-size: 11px; padding: 3px 8px; border: 0.5px solid var(--color-border-secondary); border-radius: 4px; background: transparent; cursor: pointer; color: var(--color-text-secondary); }
+  .slot-action-btn:hover { color: var(--color-text-primary); border-color: var(--color-border-primary); }
+  .slot-action-btn.remove:hover { color: #e53e3e; border-color: #e53e3e; }
+  .wing-slot-body { padding: 0 16px 12px; display: none; }
+  .wing-slot-body.open { display: block; }
+  .add-wing-btn { margin: 10px 16px; padding: 8px; font-size: 12px; border: 0.5px dashed var(--color-border-secondary); border-radius: 6px; background: transparent; cursor: pointer; color: var(--color-text-tertiary); width: calc(100% - 32px); transition: all 0.15s; }
+  .add-wing-btn:hover:not(:disabled) { color: var(--color-text-primary); border-color: var(--color-border-primary); }
+  .add-wing-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .slot-parts-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px; }
+</style>
+
+<div class="builder">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-name">Character Builder</div>
+      <div class="section-title">LightKeeper</div>
+    </div>
+    <div class="tab-row">
+      <button class="tab active" onclick="switchTab('parts')">파츠</button>
+      <button class="tab" onclick="switchTab('adjust')">위치 조정</button>
+    </div>
+
+    <div id="tab-parts" class="ctrl-section active">
+      <div class="category">
+        <div class="cat-label">Frame</div>
+        <div class="parts-grid" id="frame-grid"></div>
+      </div>
+      <div class="category">
+        <div class="cat-label">Eye</div>
+        <div class="parts-grid" id="eye-grid"></div>
+      </div>
+      <div class="category" style="padding-bottom:0;">
+        <div class="cat-label" style="padding:0 0 8px;">Wing</div>
+        <div id="wing-slots"></div>
+        <button class="add-wing-btn" id="add-wing-btn" onclick="addWingSlot()">+ 날개 추가</button>
+      </div>
+      <div class="category">
+        <div class="cat-label">Tail</div>
+        <div class="parts-grid" id="tail-grid"></div>
+        <div id="tail-sym-row" style="margin-top:8px; display:none;">
+          <div class="ctrl-row">
+            <span class="ctrl-label" style="width:36px;">배치</span>
+            <div class="btn-group" style="flex:1;">
+              <button class="tog-btn active" id="tail-sym-off" onclick="setTailSym(false)">한쪽</button>
+              <button class="tog-btn" id="tail-sym-on" onclick="setTailSym(true)">대칭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-adjust" class="ctrl-section">
+      <div class="ctrl-group">
+        <div class="cat-label" style="margin-bottom:10px;">Frame</div>
+        <div class="ctrl-row"><span class="ctrl-label">크기</span><input type="range" min="60" max="140" value="100" step="1" oninput="updateCtrl('frame','scale',this.value)"/><span class="ctrl-val" id="frame-scale-val">100%</span></div>
+      </div>
+      <div class="ctrl-group">
+        <div class="cat-label" style="margin-bottom:10px;">Eye</div>
+        <div class="ctrl-row"><span class="ctrl-label">X</span><input type="range" min="-50" max="50" value="0" step="1" oninput="updateCtrl('eye','x',this.value)"/><span class="ctrl-val" id="eye-x-val">0</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">Y</span><input type="range" min="-50" max="50" value="0" step="1" oninput="updateCtrl('eye','y',this.value)"/><span class="ctrl-val" id="eye-y-val">0</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">크기</span><input type="range" min="30" max="160" value="100" step="1" oninput="updateCtrl('eye','scale',this.value)"/><span class="ctrl-val" id="eye-scale-val">100%</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">회전</span><input type="range" min="-180" max="180" value="0" step="1" oninput="updateCtrl('eye','rot',this.value)"/><span class="ctrl-val" id="eye-rot-val">0°</span></div>
+      </div>
+      <div id="adjust-wings-area"></div>
+      <div class="ctrl-group" id="adjust-tail-area" style="display:none;">
+        <div class="cat-label" style="margin-bottom:10px;">Tail</div>
+        <div class="ctrl-row"><span class="ctrl-label">X</span><input type="range" min="-80" max="80" value="0" step="1" oninput="updateTailCtrl('x',this.value)"/><span class="ctrl-val" id="tail-x-val">0</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">Y</span><input type="range" min="-20" max="120" value="55" step="1" oninput="updateTailCtrl('y',this.value)"/><span class="ctrl-val" id="tail-y-val">55</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">크기</span><input type="range" min="30" max="300" value="100" step="1" oninput="updateTailCtrl('scale',this.value)"/><span class="ctrl-val" id="tail-scale-val">100%</span></div>
+        <div class="ctrl-row"><span class="ctrl-label">회전</span><input type="range" min="-180" max="180" value="0" step="1" oninput="updateTailCtrl('rot',this.value)"/><span class="ctrl-val" id="tail-rot-val">0°</span></div>
+      </div>
+      <p class="tip">각 파츠의 위치와 크기를 조절해서 나만의 조합을 만들어보세요.</p>
+    </div>
+  </div>
+
+  <div class="canvas-area">
+    <div class="canvas-header">
+      <span class="canvas-title">미리보기</span>
+      <div class="action-btns">
+        <button class="action-btn" onclick="randomize()">랜덤</button>
+        <button class="action-btn" onclick="exportSVG()">내보내기</button>
+      </div>
+    </div>
+    <div class="canvas-wrap">
+      <svg id="stage" width="320" height="320" viewBox="-160 -160 320 320" style="overflow:visible;">
+        <g id="g-wings"></g>
+        <g id="g-tail"></g>
+        <g id="g-frame"></g>
+        <g id="g-eye"></g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script>
+function normalizeColor(html) {
+  return html
+    .replace(/fill="#[0-9a-fA-F]{3,6}"/g, 'fill="currentColor"')
+    .replace(/stroke="#[0-9a-fA-F]{3,6}"/g, 'stroke="currentColor"')
+    .replace(/fill="black"/g,'fill="currentColor"')
+    .replace(/stroke="black"/g,'stroke="currentColor"');
+}
+function vbTransform(vb, size) {
+  const [x,y,w,h] = vb;
+  const sc = size / Math.max(w,h);
+  return `translate(${-(x+w/2)*sc},${-(y+h/2)*sc}) scale(${sc})`;
+}
+
+const FRAMES = [
+  { id:'none', label:'없음', vb:null, content:null },
+  { id:'frame_01', label:'F01', vb:[0,0,119.31,119.31], content:`<path d="M98,14c4.03,0,7.31,3.28,7.31,7.31v76.69c0,4.03-3.28,7.31-7.31,7.31H21.31c-4.03,0-7.31-3.28-7.31-7.31V21.31c0-4.03,3.28-7.31,7.31-7.31h76.69M98,0H21.31C9.54,0,0,9.54,0,21.31v76.69c0,11.77,9.54,21.31,21.31,21.31h76.69c11.77,0,21.31-9.54,21.31-21.31V21.31c0-11.77-9.54-21.31-21.31-21.31h0Z" fill="currentColor"/>` },
+  { id:'frame_02', label:'F02', vb:[0,0,119.31,119.31], content:`<path d="M59.65,15c24.62,0,44.65,20.03,44.65,44.65s-20.03,44.65-44.65,44.65S15,84.28,15,59.65,35.03,15,59.65,15M59.65,0C26.71,0,0,26.71,0,59.65s26.71,59.65,59.65,59.65,59.65-26.71,59.65-59.65S92.6,0,59.65,0h0Z" fill="currentColor"/>` },
+  { id:'frame_03', label:'F03', vb:[0,0,132.1,119.31], content:`<path d="M69.33,14c26.89,0,48.77,21.88,48.77,48.77v34.12c0,4.64-3.78,8.42-8.42,8.42H22.42c-4.64,0-8.42-3.78-8.42-8.42v-34.12c0-26.89,21.88-48.77,48.77-48.77h6.56M69.33,0h-6.56C28.1,0,0,28.1,0,62.77v34.12c0,12.38,10.04,22.42,22.42,22.42h87.26c12.38,0,22.42-10.04,22.42-22.42v-34.12C132.1,28.1,103.99,0,69.33,0h0Z" fill="currentColor"/>` },
+  { id:'frame_04', label:'F04', vb:[0,0,118.72,141.61], content:`<path d="M15.07,63.81c2.76-27.48,21.57-48.81,44.29-48.81s41.53,21.33,44.29,48.81h15.07C115.76,27.99,90.32,0,59.36,0S2.96,27.99,0,63.81h15.07Z" fill="currentColor"/><path d="M103.65,77.8c-2.76,27.48-21.57,48.81-44.29,48.81s-41.53-21.33-44.29-48.81H0c2.96,35.82,28.41,63.81,59.36,63.81s56.4-27.99,59.36-63.81h-15.07Z" fill="currentColor"/>` },
+  { id:'frame_05', label:'F05', vb:[0,0,119.31,119.31], content:`<circle cx="59.65" cy="59.65" r="59.65" fill="currentColor"/><circle cx="59.65" cy="47.84" r="38.54" fill="white"/>` },
+];
+const EYES = [
+  { id:'none', label:'없음', vb:null, content:null },
+  { id:'eye_01', label:'E01', vb:[0,0,59.18,59.18],  content:`<circle cx="29.59" cy="29.59" r="29.59" fill="#231f20"/>` },
+  { id:'eye_02', label:'E02', vb:[0,0,58.05,58.05],  content:`<path d="M29.02,0c-.67,15.74-13.28,28.35-29.02,29.02,15.74.67,28.35,13.28,29.02,29.02.67-15.74,13.28-28.35,29.02-29.02-15.74-.67-28.35-13.28-29.02-29.02Z" fill="#231f20"/>` },
+  { id:'eye_03', label:'E03', vb:[0,0,59.18,59.18],  content:`<path d="M29.59,14c8.6,0,15.59,6.99,15.59,15.59s-6.99,15.59-15.59,15.59-15.59-6.99-15.59-15.59,6.99-15.59,15.59-15.59M29.59,0C13.25,0,0,13.25,0,29.59s13.25,29.59,29.59,29.59,29.59-13.25,29.59-29.59S45.93,0,29.59,0h0Z" fill="#231f20"/>` },
+  { id:'eye_04', label:'E04', vb:[0,0,59.17,59.17],  content:`<path d="M38.87,42.08c-6.1,4.53-14.78,4.05-20.31-1.48-5.53-5.53-6.01-14.21-1.48-20.31L7.12,10.34c-9.98,11.62-9.47,29.16,1.54,40.17,11.01,11.01,28.54,11.52,40.17,1.54l-9.96-9.96Z" fill="#231f20"/><path d="M20.3,17.08c6.1-4.53,14.78-4.05,20.31,1.48,5.53,5.53,6.01,14.21,1.48,20.31l9.96,9.96c9.98-11.63,9.47-29.16-1.54-40.17C39.49-2.35,21.96-2.86,10.34,7.12l9.96,9.96Z" fill="#231f20"/>` },
+  { id:'eye_05', label:'E05', vb:[0,0,61.23,62.24],  content:`<polygon points="38.25 36.76 32.21 31.12 38.25 25.62 61.23 31.12 38.25 36.76" fill="#231f20"/><polygon points="22.99 36.69 29.02 31.05 22.99 25.55 0 31.05 22.99 36.69" fill="#231f20"/><polygon points="36.19 22.99 30.55 29.02 25.05 22.99 30.55 0 36.19 22.99" fill="#231f20"/><polygon points="36.19 39.26 30.55 33.22 25.05 39.26 30.55 62.24 36.19 39.26" fill="#231f20"/>` },
+  { id:'eye_06', label:'E06', vb:[0,0,66.74,66.74],  content:`<polygon points="14.95 29.45 14.95 13.86 29.41 13.86 29.41 8.86 9.95 8.86 9.95 29.45 14.95 29.45" fill="#231f20"/><polygon points="37.1 13.86 51.56 13.86 51.56 29.45 56.56 29.45 56.56 8.86 37.1 8.86 37.1 13.86" fill="#231f20"/><polygon points="29.41 50.46 14.95 50.46 14.95 37.13 9.95 37.13 9.95 55.46 29.41 55.46 29.41 50.46" fill="#231f20"/><polygon points="51.56 37.13 51.56 50.46 37.1 50.46 37.1 55.46 56.56 55.46 56.56 37.13 51.56 37.13" fill="#231f20"/><line x1="19.68" y1="33.31" y2="33.31" fill="none" stroke="#231f20" stroke-miterlimit="10" stroke-width="4"/><line x1="66.74" y1="33.31" x2="47.06" y2="33.31" fill="none" stroke="#231f20" stroke-miterlimit="10" stroke-width="4"/><line x1="33.31" y1="19.68" x2="33.31" fill="none" stroke="#231f20" stroke-miterlimit="10" stroke-width="4"/><line x1="33.31" y1="66.74" x2="33.31" y2="47.06" fill="none" stroke="#231f20" stroke-miterlimit="10" stroke-width="4"/>` },
+  { id:'eye_07', label:'E07', vb:[0,0,48.98,65.18],  content:`<line x1="24.49" y1="65.18" x2="24.49" fill="none" stroke="#231f20" stroke-miterlimit="10" stroke-width="3"/><path d="M21.38,50.66c-9.27-1.5-16.38-9.53-16.38-19.22S12.11,13.73,21.38,12.23v-5.07C9.32,8.69,0,18.98,0,31.45s9.32,22.76,21.38,24.29v-5.07Z" fill="#231f20"/><path d="M27.6,7.16v5.07c9.27,1.5,16.38,9.53,16.38,19.22s-7.11,17.72-16.38,19.22v5.07c12.06-1.53,21.38-11.81,21.38-24.29S39.65,8.69,27.6,7.16Z" fill="#231f20"/>` },
+  { id:'eye_08', label:'E08', vb:[0,0,48.71,48.71],  content:`<path d="M43.71,5v38.71H5V5h38.71M48.71,0H0v48.71h48.71V0h0Z" fill="#231f20"/><path d="M35.69,12.95v22.68H13.02V12.95h22.68M38.69,9.95H10.02v28.68h28.68V9.95h0Z" fill="#231f20"/>` },
+  { id:'eye_09', label:'E09', vb:[0,0,52.67,50.78],  content:`<circle cx="8.78" cy="26.53" r="8.78" fill="#231f20"/><circle cx="43.89" cy="26.53" r="8.78" fill="#231f20"/><circle cx="26.33" cy="42" r="8.78" fill="#231f20"/><circle cx="26.33" cy="8.78" r="8.78" fill="#231f20"/>` },
+];
+const WINGS = [
+  { id:'none', label:'없음', vb:null, content:null },
+  { id:'wing_01', label:'W01', vb:[0,0,99.96,145.44],  content:`<polygon points="46.64 109.52 29.17 97.25 46.94 85.61 96.14 98.03 46.64 109.52" fill="currentColor"/><polygon points="41.33 79.75 20.39 83.91 24.25 63.01 99.96 0 41.33 79.75" fill="currentColor"/><polygon points="32.85 127.14 30.24 112.99 44.56 115.57 62.66 145.44 32.85 127.14" fill="currentColor"/><circle cx="9.66" cy="97.56" r="9.66" fill="currentColor"/>` },
+  { id:'wing_02', label:'W02', vb:[0,0,85.41,154.61],  content:`<path d="M13.88.28C10.27,1.59,4.46,4.29.82,8.97c-1.23,1.59-1.05,3.86.34,5.31,6.01,6.25,22.57,25.93,31.5,60.82,11.04,43.15,10.61,79.5,10.61,79.5,0,0,11.19-19.94,8.67-70.83,0,0,15.89,24.98,14.88,47.54,0,0,11.77-17.15-7.13-59.29,0,0,14.78,11.02,25.56,33.81,0,0,3.76-25.75-25.91-59.41,0,0,16.17.16,24.95,8.14,0,0-9.54-21.24-33.82-31.49C32.28,15.41,22.64,5.87,18.94,1.57,17.7.12,15.68-.37,13.88.28Z" fill="currentColor"/>` },
+  { id:'wing_03', label:'W03', vb:[0,0,97.12,139.71],  content:`<path d="M0,27.42s28.6,33.44,35.12,52.99c6.52,19.56,41.64,59.3,41.64,59.3,0,0-4.63-67.29-27.55-91.48C26.29,24.05,0,27.42,0,27.42Z" fill="currentColor"/><path d="M0,27.42s33.34,16.04,44.98,28.89c11.64,12.84,52.14,31.53,52.14,31.53,0,0-26.36-50.22-52.2-61.07C19.09,15.92,0,27.42,0,27.42Z" fill="currentColor"/><path d="M0,27.41s30.04-.48,43.17,4.61c13.12,5.09,49.32,3.93,49.32,3.93,0,0-37.4-26.88-60.11-25.36C9.68,12.12,0,27.41,0,27.41Z" fill="currentColor"/><path d="M0,27.39s22.49-10.27,34.07-10.76c11.58-.49,38.49-13.31,38.49-13.31,0,0-37.07-7.93-53.69.71C2.25,12.67,0,27.39,0,27.39Z" fill="currentColor"/>` },
+  { id:'wing_04', label:'W04', vb:[0,0,83.03,130.54],  content:`<path d="M1.64,98.08c3.29,3.24,14.39,15.23,13.46,29.13-.13,1.98,1.59,3.56,3.56,3.31,14.69-1.91,63.63-10.26,61.89-36.36,0,0-.07-9.28-11.91-8.87,0,0,21.47-23.57,11.95-33.82-9.52-10.25-27,6.63-27,6.63,0,0,30.54-48.22,15.47-56.86-9.28-5.32-24.21,7.8-34.3,18.67-6.82,7.34-12.66,15.52-17.5,24.3C9.41,58.44-2.15,82.34.35,95.63c.18.93.61,1.78,1.29,2.45Z" fill="currentColor"/>` },
+  { id:'wing_05', label:'W05', vb:[0,0,114.91,108.9],  content:`<ellipse cx="59.39" cy="49.51" rx="71.22" ry="15.71" transform="translate(-17.85 53.15) rotate(-42.51)" fill="currentColor"/><ellipse cx="66.51" cy="67.86" rx="50.84" ry="16.06" transform="translate(-18.33 25.08) rotate(-18.81)" fill="currentColor"/><ellipse cx="49.73" cy="94.73" rx="43.84" ry="13.85" transform="translate(-6.59 3.76) rotate(-4.06)" fill="currentColor"/><circle cx="18.63" cy="86.88" r="18.63" fill="currentColor"/>` },
+  { id:'wing_06', label:'W06', vb:[0,0,103.09,130.95], content:`<path d="M24.48,88.72c-1.23,2.86-1.41,6.15-.18,9.01,2.36,5.48,10.26,11.5,35.28,6.22,40.94-8.65,32.58-26.24,32.58-26.24,0,0-2.07-11.24-34.05-2.59-29.25,7.91-30.54,6.42-33.63,13.61Z" fill="currentColor"/><path d="M20.15,64.7s11.56,19.27,53.94-18.49S99.9,1.51,99.9,1.51c0,0-9.63-10.02-49.32,21.58-39.69,31.59-30.44,41.61-30.44,41.61Z" fill="currentColor"/><path d="M16.12,115.34s-6.37,6.73,7.63,12.66c14,5.93,16.82,1.08,16.82,1.08,0,0,3.48-7.47-7.53-12.64-11.01-5.17-16.91-1.1-16.91-1.1Z" fill="currentColor"/><path d="M0,78.03v33.64c0,1.56,1.61,2.61,3.02,1.95,3.7-1.73,9.55-6.35,10.25-18.4.77-13.23-6.97-17.51-10.97-18.83-1.13-.38-2.3.45-2.3,1.64Z" fill="currentColor"/>` },
+  { id:'wing_07', label:'W07', vb:[0,0,135.67,134.32], content:`<circle cx="4.94" cy="100.44" r="4.94" fill="currentColor"/><path d="M17.06,105.38s8.93,5.58,9.88,13.23c.49,3.9,7.52,7.89,14.3,10.86,10,4.38,21.06,5.9,31.83,4.13,8.2-1.35,17.89-4.37,26.56-10.84,0,0-19.13,0-26.78-11.48,0,0,.09-3.94,20.73-5.9,22.1-2.1,41.45-32.36,42.09-43.84,0,0-27.74,23.6-59.31,21.04,0,0,43.05-41.13,45.28-82.58,0,0-41.13,53.25-53.89,58.03-12.75,4.78-49.74,24.87-50.7,47.35Z" fill="currentColor"/>` },
+  { id:'wing_08', label:'W08', vb:[0,0,106.03,141.11], content:`<circle cx="10.88" cy="48.27" r="10.88" fill="currentColor"/><path d="M4.49,29.21c-.32,1.22.83,2.31,2.01,1.87,5.47-2.05,18.26-4.23,26.08,15.56,6.74,17.04,9.01,34.61,9.77,44.52.28,3.69.36,7.37.29,11.07-.17,8.04.12,30.14,7.88,38.87,0,0,26.31-18.53,19.13-69.95,0,0,10.76,20.92,22.12,23.91,0,0,15.54-26.9-4.78-59.79,0,0,14.93-2.1,18.52-6.43S94.16.61,57.1.01C22.81-.54,7.89,16.17,4.49,29.21Z" fill="currentColor"/>` },
+  { id:'wing_09', label:'W09', vb:[0,0,123.52,125.87], content:`<path d="M0,125.87h29.6l19.25-56.42c.65-2,2.39-3.42,4.48-3.68,11.13-1.38,47.35-10.14,70.19-65.77,0,0-83.06,54.94-90.52,55.83C26.43,56.61,0,125.87,0,125.87Z" fill="currentColor"/><path d="M44.89,107.47h15.34l5.24-22.13c.44-1.85,1.9-3.3,3.77-3.7,8.93-1.9,34.89-8.57,39.83-23.05l3.42-10.47s-36.64,22.04-50.1,23.68c-1.38.17-5.32,2.58-5.87,3.86l-11.63,31.79Z" fill="currentColor"/><path d="M72.68,97.66h16.56s17.22-1.76,23.26-19.86c0,0-4.61,5.16-13.38,3.18-5.56-1.25-12.58,1.46-16.97,3.62-2.64,1.3-4.76,3.45-6.06,6.09l-3.41,6.96Z" fill="currentColor"/>` },
+  { id:'wing_10', label:'W10', vb:[0,0,140.39,110.44], content:`<path d="M.07,81.31c.13-.93.2-1.86.13-2.8-.24-3.06,1.49-11.53,23.92-21.57C52.34,44.3,95.31,0,95.31,0c0,0-2.95,26.19-35.39,54.83,0,0,68.25-10.11,80.47-23.59,0,0-8.85,26.54-60.66,40.44,0,0,27.8,5.48,37.92-.42,0,0-10.95,16.43-65.72,13.48,0,0,15.59,8.85,29.91,5.48,0,0-27.38,16.52-47.18,3.84,0,0,7.16,11.33,21.49,16.38,0,0-22.72,0-36.93-10.05-1.52-1.08-3.09-2.07-4.76-2.9-4.95-2.46-15.42-8.61-14.37-16.18Z" fill="currentColor"/>` },
+];
+const TAILS = [
+  { id:'none', label:'없음', vb:null, content:null },
+  { id:'tail_01', label:'T01', vb:[0,0,17.34,17.77],  content:`<polygon points="0 0 17.34 0 8.67 17.77 0 0" fill="#231f20"/>` },
+  { id:'tail_02', label:'T02', vb:[0,0,17.34,26.51],  content:`<path d="M0,0h17.34l-6.75,25.04c-.53,1.96-3.31,1.96-3.84,0L0,0Z" fill="#231f20"/>` },
+  { id:'tail_03', label:'T03', vb:[0,0,16.56,44.01],  content:`<path d="M.17,0c-.11,2.37-.17,4.81-.17,7.32,0,20.27,3.71,36.69,8.28,36.69S16.56,27.59,16.56,7.32c0-2.51-.06-4.95-.17-7.32H.17Z" fill="#231f20"/>` },
+  { id:'tail_04', label:'T04', vb:[0,0,17.75,17.75],  content:`<circle cx="8.87" cy="8.87" r="8.87" fill="#231f20"/>` },
+  { id:'tail_05', label:'T05', vb:[0,0,17.58,17.58],  content:`<rect width="17.58" height="17.58" fill="#231f20"/>` },
+  { id:'tail_06', label:'T06', vb:[0,0,8.59,32.97],   content:`<path d="M0,0h8.59v30.74c0,1.23-1,2.23-2.23,2.23H2.23c-1.23,0-2.23-1-2.23-2.23V0h0Z" fill="#231f20"/>` },
+  { id:'tail_07', label:'T07', vb:[0,0,28.09,28.09],  content:`<path d="M14.04,0c-.33,7.62-6.43,13.72-14.04,14.04,7.62.33,13.72,6.43,14.04,14.04.33-7.62,6.43-13.72,14.04-14.04-7.62-.33-13.72-6.43-14.04-14.04Z" fill="#231f20"/>` },
+];
+
+// ── state ──
+const DEFAULT_WING_SCALE = 150;
+const DEFAULT_WING_TX    = 95; // 날개 기본 X 오프셋 (오른쪽으로 더 띄움)
+
+let wingSlots = [
+  { id:0, wingId:'wing_07', x:0, y:0, scale:DEFAULT_WING_SCALE, rot:0, flip:0, symmetric:false, open:true }
+];
+let nextSlotId = 1;
+
+const state = {
+  frame: { id:'frame_02', scale:100 },
+  eye:   { id:'eye_02', x:0, y:0, scale:100, rot:0 },
+  tail:  { id:'none', x:0, y:55, scale:100, rot:0, symmetric:false },
+};
+
+// ── 탭 ──
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.textContent.includes(t==='parts'?'파츠':'위치')));
+  document.querySelectorAll('.ctrl-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  if (t==='adjust') renderAdjustWings();
+}
+
+// ── 파츠 그리드 ──
+function buildGrid(gridId, parts, category) {
+  const grid = document.getElementById(gridId); if (!grid) return;
+  grid.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+  parts.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'part-btn' + (state[category] && state[category].id===p.id ? ' selected':'');
+    if (!p.content) {
+      btn.innerHTML = '<span style="font-size:10px;color:var(--color-text-tertiary)">없음</span>';
+    } else {
+      const s = document.createElementNS(ns,'svg');
+      s.setAttribute('viewBox',`${p.vb[0]} ${p.vb[1]} ${p.vb[2]} ${p.vb[3]}`);
+      s.innerHTML = normalizeColor(p.content);
+      btn.appendChild(s);
+    }
+    btn.onclick = () => {
+      state[category].id = p.id;
+      buildGrid(gridId, parts, category);
+      if (category==='tail') {
+        document.getElementById('tail-sym-row').style.display = p.id==='none' ? 'none' : 'block';
+        const adjTail = document.getElementById('adjust-tail-area');
+        if (adjTail) adjTail.style.display = p.id==='none' ? 'none' : 'block';
+      }
+      render();
+    };
+    btn.title = p.label;
+    grid.appendChild(btn);
+  });
+}
+
+// ── 꼬리 대칭 ──
+function setTailSym(val) {
+  state.tail.symmetric = val;
+  document.getElementById('tail-sym-off').classList.toggle('active', !val);
+  document.getElementById('tail-sym-on').classList.toggle('active', val);
+  render();
+}
+
+// ── 날개 슬롯 ──
+function buildWingSlots() {
+  const container = document.getElementById('wing-slots');
+  container.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+  wingSlots.forEach((slot, idx) => {
+    const wrap = document.createElement('div'); wrap.className='wing-slot';
+    const header = document.createElement('div'); header.className='wing-slot-header';
+    const title = document.createElement('span'); title.className='wing-slot-title'; title.textContent=`Wing ${idx+1}`;
+    const actions = document.createElement('div'); actions.className='wing-slot-actions';
+    if (wingSlots.length > 1) {
+      const rem = document.createElement('button'); rem.className='slot-action-btn remove'; rem.textContent='제거';
+      rem.onclick = e => { e.stopPropagation(); removeWingSlot(slot.id); }; actions.appendChild(rem);
+    }
+    const tog = document.createElement('button'); tog.className='slot-action-btn';
+    tog.textContent = slot.open?'접기':'펼치기';
+    tog.onclick = e => { e.stopPropagation(); slot.open=!slot.open; buildWingSlots(); };
+    actions.appendChild(tog); header.appendChild(title); header.appendChild(actions);
+    header.onclick = () => { slot.open=!slot.open; buildWingSlots(); };
+    wrap.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'wing-slot-body'+(slot.open?' open':'');
+
+    // 파츠 그리드
+    const grid = document.createElement('div'); grid.className='slot-parts-grid';
+    WINGS.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'part-btn'+(slot.wingId===p.id?' selected':'');
+      if (!p.content) { btn.innerHTML='<span style="font-size:10px;color:var(--color-text-tertiary)">없음</span>'; }
+      else {
+        const s = document.createElementNS(ns,'svg');
+        s.setAttribute('viewBox',`${p.vb[0]} ${p.vb[1]} ${p.vb[2]} ${p.vb[3]}`);
+        s.innerHTML = normalizeColor(p.content); btn.appendChild(s);
+      }
+      btn.onclick = () => { slot.wingId=p.id; buildWingSlots(); render(); };
+      grid.appendChild(btn);
+    });
+    body.appendChild(grid);
+
+    // 뒤집기
+    const flipRow = document.createElement('div'); flipRow.className='ctrl-row';
+    flipRow.innerHTML=`<span class="ctrl-label" style="width:36px;font-size:12px;color:var(--color-text-secondary);">뒤집기</span>`;
+    const flipGroup = document.createElement('div'); flipGroup.className='btn-group';
+    ['오른쪽','왼쪽'].forEach((label,val) => {
+      const b=document.createElement('button'); b.className='tog-btn'+(slot.flip===val?' active':'');
+      b.textContent=label; b.onclick=()=>{slot.flip=val;buildWingSlots();render();}; flipGroup.appendChild(b);
+    });
+    flipRow.appendChild(flipGroup); body.appendChild(flipRow);
+
+    // 대칭
+    const symRow = document.createElement('div'); symRow.className='ctrl-row'; symRow.style.marginTop='6px';
+    symRow.innerHTML=`<span class="ctrl-label" style="width:36px;font-size:12px;color:var(--color-text-secondary);">배치</span>`;
+    const symGroup = document.createElement('div'); symGroup.className='btn-group';
+    [['한쪽',false],['대칭',true]].forEach(([label,val]) => {
+      const b=document.createElement('button'); b.className='tog-btn'+(slot.symmetric===val?' active':'');
+      b.textContent=label; b.onclick=()=>{slot.symmetric=val;buildWingSlots();render();}; symGroup.appendChild(b);
+    });
+    symRow.appendChild(symGroup); body.appendChild(symRow);
+    wrap.appendChild(body); container.appendChild(wrap);
+  });
+  const addBtn = document.getElementById('add-wing-btn');
+  addBtn.disabled = wingSlots.length>=3;
+  addBtn.textContent = wingSlots.length>=3 ? '날개 최대 3쌍':'+ 날개 추가';
+}
+
+function addWingSlot() {
+  if (wingSlots.length>=3) return;
+  wingSlots.push({ id:nextSlotId++, wingId:WINGS[1+Math.floor(Math.random()*(WINGS.length-1))].id, x:0, y:-15*wingSlots.length, scale:DEFAULT_WING_SCALE, rot:0, flip:0, symmetric:false, open:true });
+  buildWingSlots(); renderAdjustWings(); render();
+}
+function removeWingSlot(id) {
+  wingSlots=wingSlots.filter(s=>s.id!==id); buildWingSlots(); renderAdjustWings(); render();
+}
+
+// ── 위치조정 탭 - 날개 ──
+function renderAdjustWings() {
+  const area=document.getElementById('adjust-wings-area'); if(!area) return;
+  area.innerHTML='';
+  wingSlots.forEach((slot,idx) => {
+    const g=document.createElement('div'); g.className='ctrl-group';
+    g.innerHTML=`
+      <div class="cat-label" style="margin-bottom:10px;">Wing ${idx+1}</div>
+      <div class="ctrl-row"><span class="ctrl-label">X</span><input type="range" min="-130" max="130" value="${slot.x}" step="1" oninput="updateWingCtrl(${slot.id},'x',this.value)"/><span class="ctrl-val" id="wctrl-${slot.id}-x">${slot.x}</span></div>
+      <div class="ctrl-row"><span class="ctrl-label">Y</span><input type="range" min="-130" max="130" value="${slot.y}" step="1" oninput="updateWingCtrl(${slot.id},'y',this.value)"/><span class="ctrl-val" id="wctrl-${slot.id}-y">${slot.y}</span></div>
+      <div class="ctrl-row"><span class="ctrl-label">크기</span><input type="range" min="40" max="250" value="${slot.scale}" step="1" oninput="updateWingCtrl(${slot.id},'scale',this.value)"/><span class="ctrl-val" id="wctrl-${slot.id}-scale">${slot.scale}%</span></div>
+      <div class="ctrl-row"><span class="ctrl-label">회전</span><input type="range" min="-180" max="180" value="${slot.rot}" step="1" oninput="updateWingCtrl(${slot.id},'rot',this.value)"/><span class="ctrl-val" id="wctrl-${slot.id}-rot">${slot.rot}°</span></div>`;
+    area.appendChild(g);
+  });
+}
+function updateWingCtrl(slotId,prop,val) {
+  val=parseFloat(val);
+  const slot=wingSlots.find(s=>s.id===slotId); if(!slot) return;
+  slot[prop]=val;
+  const display=prop==='scale'?val+'%':prop==='rot'?val+'°':val+'';
+  const el=document.getElementById(`wctrl-${slotId}-${prop}`); if(el) el.textContent=display;
+  render();
+}
+
+// ── 꼬리 조정 ──
+function updateTailCtrl(prop, val) {
+  val = parseFloat(val);
+  state.tail[prop] = val;
+  const display = prop==='scale' ? val+'%' : prop==='rot' ? val+'°' : val+'';
+  const el = document.getElementById(`tail-${prop}-val`); if(el) el.textContent=display;
+  render();
+}
+
+// ── Frame/Eye 조정 ──
+function updateCtrl(cat,prop,val) {
+  val=parseFloat(val); state[cat][prop]=val;
+  const display=prop==='scale'?Math.round(val)+'%':prop==='rot'?Math.round(val)+'°':Math.round(val)+'';
+  const el=document.getElementById(`${cat}-${prop}-val`); if(el) el.textContent=display;
+  render();
+}
+
+// ── 렌더 ──
+function renderPart(parentG, def, transform, size) {
+  if (!def||!def.content) return;
+  const ns='http://www.w3.org/2000/svg';
+  const outer=document.createElementNS(ns,'g'); outer.setAttribute('transform',transform);
+  const inner=document.createElementNS(ns,'g'); inner.setAttribute('transform',vbTransform(def.vb,size));
+  inner.innerHTML=normalizeColor(def.content); outer.appendChild(inner); parentG.appendChild(outer);
+}
+
+function render() {
+  const ns='http://www.w3.org/2000/svg';
+
+  // Wings — 맨 뒤
+  const wingsG=document.getElementById('g-wings'); wingsG.innerHTML='';
+  wingSlots.forEach(slot => {
+    const def=WINGS.find(p=>p.id===slot.wingId); if(!def||!def.content) return;
+    const sc=slot.scale/100, flip=slot.flip?-1:1;
+    const tx=DEFAULT_WING_TX+slot.x, ty=slot.y;
+    renderPart(wingsG, def, `translate(${tx},${ty}) rotate(${slot.rot}) scale(${flip*sc},${sc})`, 100);
+    if (slot.symmetric) renderPart(wingsG, def, `translate(${-tx},${ty}) rotate(${-slot.rot}) scale(${-flip*sc},${sc})`, 100);
+  });
+
+  // Tail — frame 뒤, 아래 중앙에 겹치게
+  const tg=document.getElementById('g-tail'); tg.innerHTML='';
+  const td=TAILS.find(p=>p.id===state.tail.id);
+  if (td && td.content) {
+    const t=state.tail, sc=t.scale/100;
+    renderPart(tg, td, `translate(${t.x},${t.y}) rotate(${t.rot}) scale(${sc})`, 40);
+    if (t.symmetric) {
+      renderPart(tg, td, `translate(${-t.x},${t.y}) rotate(${-t.rot}) scale(${-sc},${sc})`, 40);
+    }
+  }
+
+  // Frame
+  const fg=document.getElementById('g-frame'); fg.innerHTML='';
+  const fd=FRAMES.find(p=>p.id===state.frame.id);
+  if (fd&&fd.content) renderPart(fg, fd, `scale(${state.frame.scale/100})`, 120);
+
+  // Eye
+  const eg=document.getElementById('g-eye'); eg.innerHTML='';
+  const ed=EYES.find(p=>p.id===state.eye.id);
+  if (ed&&ed.content) {
+    const e=state.eye;
+    renderPart(eg, ed, `translate(${e.x},${e.y}) rotate(${e.rot}) scale(${e.scale/100})`, 50);
+  }
+}
+
+function randomize() {
+  state.frame.id=FRAMES[1+Math.floor(Math.random()*(FRAMES.length-1))].id;
+  state.eye.id=EYES[1+Math.floor(Math.random()*(EYES.length-1))].id;
+  state.tail.id='none';
+  wingSlots=[{ id:0, wingId:WINGS[1+Math.floor(Math.random()*(WINGS.length-1))].id,
+    x:Math.floor(Math.random()*15), y:-(Math.floor(Math.random()*20)+10),
+    scale:DEFAULT_WING_SCALE, rot:0, flip:0, symmetric:false, open:true }];
+  nextSlotId=1;
+  buildGrid('frame-grid',FRAMES,'frame');
+  buildGrid('eye-grid',EYES,'eye');
+  buildGrid('tail-grid',TAILS,'tail');
+  buildWingSlots(); renderAdjustWings();
+  document.getElementById('tail-sym-row').style.display='none';
+  const adjTail=document.getElementById('adjust-tail-area'); if(adjTail) adjTail.style.display='none';
+  render();
+}
+
+function exportSVG() {
+  const inner=document.getElementById('stage').innerHTML;
+  const blob=new Blob([`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-160 -160 320 320">${inner}</svg>`],{type:'image/svg+xml'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='lightkeeper.svg'; a.click();
+}
+
+// 초기화
+buildGrid('frame-grid',FRAMES,'frame');
+buildGrid('eye-grid',EYES,'eye');
+buildGrid('tail-grid',TAILS,'tail');
+buildWingSlots();
+render();
+</script>
