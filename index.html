@@ -366,7 +366,13 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 
 <script>
 // ── helpers ──
-function nc(h){return h.replace(/fill="#[0-9a-fA-F]{3,6}"/g,'fill="currentColor"').replace(/stroke="#[0-9a-fA-F]{3,6}"/g,'stroke="currentColor"').replace(/fill="black"/g,'fill="currentColor"').replace(/stroke="black"/g,'stroke="currentColor"');}
+function nc(h){
+  return h
+    .replace(/fill="#([0-9a-fA-F]{3,6})"/g,(m,c)=>/^(fff|ffffff|FFF|FFFFFF)$/.test(c)?m:'fill="currentColor"')
+    .replace(/stroke="#([0-9a-fA-F]{3,6})"/g,(m,c)=>/^(fff|ffffff|FFF|FFFFFF)$/.test(c)?m:'stroke="currentColor"')
+    .replace(/fill="black"/g,'fill="currentColor"')
+    .replace(/stroke="black"/g,'stroke="currentColor"');
+}
 function vbt(vb,sz){const[x,y,w,h]=vb,sc=sz/Math.max(w,h);return `translate(${-(x+w/2)*sc},${-(y+h/2)*sc}) scale(${sc})`;}
 function mkG(ns){return document.createElementNS(ns,'g');}
 
@@ -377,7 +383,7 @@ const FRAMES=[
   {id:'frame_02',label:'F02',vb:[0,0,119.31,119.31],content:`<path d="M59.65,15c24.62,0,44.65,20.03,44.65,44.65s-20.03,44.65-44.65,44.65S15,84.28,15,59.65,35.03,15,59.65,15M59.65,0C26.71,0,0,26.71,0,59.65s26.71,59.65,59.65,59.65,59.65-26.71,59.65-59.65S92.6,0,59.65,0h0Z" fill="currentColor"/>`},
   {id:'frame_03',label:'F03',vb:[0,0,132.1,119.31],content:`<path d="M69.33,14c26.89,0,48.77,21.88,48.77,48.77v34.12c0,4.64-3.78,8.42-8.42,8.42H22.42c-4.64,0-8.42-3.78-8.42-8.42v-34.12c0-26.89,21.88-48.77,48.77-48.77h6.56M69.33,0h-6.56C28.1,0,0,28.1,0,62.77v34.12c0,12.38,10.04,22.42,22.42,22.42h87.26c12.38,0,22.42-10.04,22.42-22.42v-34.12C132.1,28.1,103.99,0,69.33,0h0Z" fill="currentColor"/>`},
   {id:'frame_04',label:'F04',vb:[0,0,118.72,141.61],content:`<path d="M15.07,63.81c2.76-27.48,21.57-48.81,44.29-48.81s41.53,21.33,44.29,48.81h15.07C115.76,27.99,90.32,0,59.36,0S2.96,27.99,0,63.81h15.07Z" fill="currentColor"/><path d="M103.65,77.8c-2.76,27.48-21.57,48.81-44.29,48.81s-41.53-21.33-44.29-48.81H0c2.96,35.82,28.41,63.81,59.36,63.81s56.4-27.99,59.36-63.81h-15.07Z" fill="currentColor"/>`},
-  {id:'frame_05',label:'F05',vb:[0,0,119.31,119.31],content:`<circle cx="59.65" cy="59.65" r="59.65" fill="currentColor"/><circle cx="59.65" cy="47.84" r="38.54" fill="#f5f3ef"/>`},
+  {id:'frame_05',label:'F05',vb:[0,0,119.31,119.31],content:`<circle cx="59.65" cy="59.65" r="59.65" fill="currentColor"/><circle cx="59.65" cy="47.84" r="38.54" fill="white"/>`},
 ];
 const EYES=[
   {id:'none',label:'없음',vb:null,content:null},
