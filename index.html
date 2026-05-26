@@ -1,331 +1,383 @@
-
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LightKeeper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f5f3ef;
+  --bg2:#eceae4;
+  --bg3:#e2dfd8;
+  --border:#d5d1c8;
+  --border2:#bfbab0;
+  --text:#1c1a17;
+  --text2:#6b6760;
+  --text3:#a09b93;
+  --accent:#1c1a17;
+  --white:#ffffff;
+  --red:#b03020;
+  --sidebar:288px;
+  --nav:52px;
+}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
 
-:root {
-  --bg: var(--color-background-primary);
-  --bg2: var(--color-background-secondary);
-  --border: var(--color-border-tertiary);
-  --border2: var(--color-border-secondary);
-  --text: var(--color-text-primary);
-  --text2: var(--color-text-secondary);
-  --text3: var(--color-text-tertiary);
-  --radius: var(--border-radius-md);
-  --radius-lg: var(--border-radius-lg);
-  --sidebar: 280px;
-  --font: var(--font-sans);
-  --mono: var(--font-mono);
+/* ── NAV ── */
+.nav{
+  height:var(--nav);flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+  position:relative;z-index:20;
 }
+.nav-brand{
+  font-size:14px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  display:flex;align-items:baseline;gap:8px;
+}
+.nav-brand-sub{font-family:'DM Mono',monospace;font-size:10px;font-weight:400;color:var(--text3);letter-spacing:0.06em;text-transform:none;}
+.nav-center{display:flex;gap:2px;}
+.nav-tab{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.06em;
+  padding:6px 16px;border-radius:20px;border:1px solid transparent;
+  background:transparent;cursor:pointer;color:var(--text2);transition:all 0.15s;
+}
+.nav-tab:hover{color:var(--text);background:var(--bg2);}
+.nav-tab.active{color:var(--text);background:var(--bg2);border-color:var(--border2);}
+.nav-tab .count{font-size:10px;opacity:0.5;margin-left:3px;}
+.nav-right{display:flex;gap:8px;}
+.btn{
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:600;
+  padding:7px 16px;border-radius:6px;
+  border:1px solid var(--border2);background:var(--bg2);
+  color:var(--text);cursor:pointer;transition:all 0.15s;letter-spacing:0.02em;
+}
+.btn:hover{background:var(--bg3);border-color:var(--border2);}
+.btn-primary{background:var(--accent);color:var(--white);border-color:var(--accent);}
+.btn-primary:hover{opacity:0.82;background:var(--accent);}
 
-body { font-family: var(--font); color: var(--text); background: var(--bg); min-height: 600px; }
+/* ── PAGES ── */
+.page{display:none;flex:1;overflow:hidden;}
+.page.active{display:flex;}
 
-/* ── nav ── */
-.nav {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 24px; border-bottom: 0.5px solid var(--border);
-  background: var(--bg); position: sticky; top: 0; z-index: 20;
-}
-.nav-brand { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; }
-.nav-tabs { display: flex; gap: 4px; }
-.nav-tab {
-  font-family: var(--mono); font-size: 11px; padding: 5px 14px;
-  border-radius: var(--radius); border: 0.5px solid transparent;
-  background: transparent; cursor: pointer; color: var(--text2);
-  transition: all 0.15s; letter-spacing: 0.04em;
-}
-.nav-tab:hover { color: var(--text); background: var(--bg2); }
-.nav-tab.active { color: var(--text); background: var(--bg2); border-color: var(--border2); }
-.nav-actions { display: flex; gap: 8px; }
-.btn {
-  font-family: var(--font); font-size: 12px; font-weight: 500;
-  padding: 6px 14px; border-radius: var(--radius);
-  border: 0.5px solid var(--border2); background: transparent;
-  color: var(--text); cursor: pointer; transition: all 0.15s;
-}
-.btn:hover { background: var(--bg2); }
-.btn-dark { background: var(--text); color: var(--bg); border-color: var(--text); }
-.btn-dark:hover { opacity: 0.8; background: var(--text); }
+/* ─────────────────────────────────────────
+   BUILDER
+───────────────────────────────────────── */
+.builder{display:flex;width:100%;height:100%;}
 
-/* ── pages ── */
-.page { display: none; }
-.page.active { display: flex; }
+/* sidebar */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  border-right:1px solid var(--border);
+  background:var(--bg2);
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.tab-row{display:flex;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:5;}
+.stab{
+  flex:1;padding:10px 6px;
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--text3);border:none;background:transparent;cursor:pointer;
+  border-bottom:1.5px solid transparent;margin-bottom:-1px;transition:color 0.15s;
+}
+.stab:hover{color:var(--text);}
+.stab.active{color:var(--text);border-bottom-color:var(--accent);}
+.ctrl-section{display:none;}
+.ctrl-section.active{display:block;}
 
-/* ── builder layout ── */
-.builder { display: flex; height: calc(600px - 49px); width: 100%; overflow: hidden; }
-.sidebar {
-  width: var(--sidebar); flex-shrink: 0; border-right: 0.5px solid var(--border);
-  background: var(--bg2); overflow-y: auto; display: flex; flex-direction: column;
+.category{padding:12px 14px;border-bottom:1px solid var(--border);}
+.cat-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--text3);text-transform:uppercase;margin-bottom:9px;}
+.parts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.slot-parts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:9px;}
+.part-btn{
+  aspect-ratio:1;border-radius:6px;border:1px solid var(--border);
+  background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  padding:5px;overflow:hidden;transition:all 0.12s;
 }
-.sidebar::-webkit-scrollbar { width: 3px; }
-.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-.tab-row { display: flex; border-bottom: 0.5px solid var(--border); position: sticky; top:0; background: var(--bg2); z-index:2; }
-.tab {
-  flex: 1; padding: 9px 6px; font-family: var(--mono); font-size: 11px;
-  color: var(--text2); border: none; background: transparent; cursor: pointer;
-  border-bottom: 1.5px solid transparent; margin-bottom: -0.5px; transition: color 0.15s;
-}
-.tab:hover { color: var(--text); }
-.tab.active { color: var(--text); border-bottom-color: var(--text); }
-.ctrl-section { display: none; }
-.ctrl-section.active { display: block; }
-.category { padding: 12px 14px; border-bottom: 0.5px solid var(--border); }
-.cat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 8px; }
-.parts-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; }
-.slot-parts-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; margin-bottom: 8px; }
-.part-btn {
-  aspect-ratio: 1; border-radius: 6px; border: 0.5px solid var(--border);
-  background: var(--bg); cursor: pointer; display: flex; align-items: center;
-  justify-content: center; padding: 5px; overflow: hidden; transition: all 0.12s;
-}
-.part-btn:hover { border-color: var(--border2); }
-.part-btn.selected { border: 1.5px solid var(--text); }
-.part-btn svg { width: 100%; height: 100%; }
-.ctrl-group { padding: 11px 14px; border-bottom: 0.5px solid var(--border); }
-.ctrl-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.ctrl-row:last-child { margin-bottom: 0; }
-.ctrl-label { font-family: var(--mono); font-size: 10px; color: var(--text2); width: 28px; flex-shrink: 0; }
-.ctrl-row input[type=range] { flex: 1; accent-color: var(--text); cursor: pointer; }
-.ctrl-val { font-family: var(--mono); font-size: 10px; color: var(--text); min-width: 36px; text-align: right; }
-.btn-group { display: flex; gap: 4px; flex: 1; }
-.tog-btn {
-  flex: 1; padding: 4px 6px; font-family: var(--mono); font-size: 10px;
-  border: 0.5px solid var(--border2); border-radius: 5px; background: var(--bg);
-  cursor: pointer; color: var(--text2); transition: all 0.12s;
-}
-.tog-btn:hover { color: var(--text); }
-.tog-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-.wing-slot { border-bottom: 0.5px solid var(--border); }
-.wing-slot-header { display: flex; align-items: center; justify-content: space-between; padding: 7px 14px; cursor: pointer; user-select: none; }
-.wing-slot-header:hover { background: rgba(0,0,0,0.02); }
-.wing-slot-title { font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--text); letter-spacing: 0.06em; text-transform: uppercase; }
-.wing-slot-actions { display: flex; gap: 4px; }
-.slot-action-btn { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border: 0.5px solid var(--border); border-radius: 4px; background: transparent; cursor: pointer; color: var(--text2); transition: all 0.12s; }
-.slot-action-btn:hover { color: var(--text); border-color: var(--border2); }
-.slot-action-btn.remove:hover { color: #c0392b; border-color: #c0392b; }
-.wing-slot-body { padding: 0 14px 10px; display: none; }
-.wing-slot-body.open { display: block; }
-.add-wing-btn {
-  display: block; margin: 8px 14px; padding: 8px; font-family: var(--mono); font-size: 10px;
-  letter-spacing: 0.06em; border: 0.5px dashed var(--border2); border-radius: 6px;
-  background: transparent; cursor: pointer; color: var(--text3); width: calc(100% - 28px);
-  transition: all 0.15s; text-transform: uppercase;
-}
-.add-wing-btn:hover:not(:disabled) { color: var(--text); border-color: var(--text); }
-.add-wing-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.tip { font-family: var(--mono); font-size: 10px; color: var(--text3); padding: 12px 14px; line-height: 1.6; }
+.part-btn:hover{border-color:var(--border2);}
+.part-btn.selected{border:2px solid var(--accent);}
+.part-btn svg{width:100%;height:100%;}
+.part-btn .nl{font-family:'DM Mono',monospace;font-size:8px;color:var(--text3);}
 
-/* ── canvas ── */
-.canvas-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.canvas-wrap {
-  flex: 1; display: flex; align-items: center; justify-content: center; position: relative;
-  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
-  background-size: 22px 22px;
-}
-#stage { overflow: visible; position: relative; z-index: 1; }
+.ctrl-group{padding:11px 14px;border-bottom:1px solid var(--border);}
+.ctrl-group:last-child{border-bottom:none;}
+.ctrl-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.ctrl-row:last-child{margin-bottom:0;}
+.ctrl-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.04em;color:var(--text2);width:26px;flex-shrink:0;}
+.ctrl-row input[type=range]{flex:1;accent-color:var(--accent);cursor:pointer;height:3px;}
+.ctrl-val{font-family:'DM Mono',monospace;font-size:9px;color:var(--text);min-width:34px;text-align:right;}
 
-/* ── lounge ── */
-.lounge-page { flex-direction: column; width: 100%; }
-.lounge-header { padding: 20px 24px 16px; border-bottom: 0.5px solid var(--border); }
-.lounge-title { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
-.lounge-sub { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: 0.04em; }
-.lounge-body { flex: 1; overflow-y: auto; padding: 24px; }
-.lounge-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.lounge-card {
-  border: 0.5px solid var(--border); border-radius: var(--radius-lg);
-  background: var(--bg2); overflow: hidden; cursor: pointer; transition: all 0.15s;
-  display: flex; flex-direction: column;
+.btn-group{display:flex;gap:4px;flex:1;}
+.tog-btn{
+  flex:1;padding:4px 5px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.04em;
+  border:1px solid var(--border2);border-radius:4px;background:var(--bg);
+  cursor:pointer;color:var(--text2);transition:all 0.12s;
 }
-.lounge-card:hover { border-color: var(--border2); transform: translateY(-2px); }
-.lounge-card-canvas {
-  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-  background: var(--bg); border-bottom: 0.5px solid var(--border);
-  padding: 8px;
-}
-.lounge-card-canvas svg { overflow: visible; }
-.lounge-card-info { padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
-.lounge-card-name { font-size: 12px; font-weight: 500; color: var(--text); }
-.lounge-card-meta { font-family: var(--mono); font-size: 10px; color: var(--text3); }
-.lounge-card-footer { display: flex; justify-content: flex-end; padding: 0 12px 10px; }
-.del-btn { font-family: var(--mono); font-size: 10px; padding: 2px 8px; border: 0.5px solid transparent; border-radius: 4px; background: transparent; cursor: pointer; color: var(--text3); transition: all 0.12s; }
-.del-btn:hover { color: #c0392b; border-color: #c0392b; }
-.lounge-empty { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text3); font-family: var(--mono); font-size: 12px; line-height: 2; }
+.tog-btn:hover{color:var(--text);}
+.tog-btn.active{background:var(--accent);color:var(--white);border-color:var(--accent);}
 
-/* ── modal ── */
-.modal-backdrop {
-  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35);
-  z-index: 100; align-items: center; justify-content: center;
+.wing-slot{border-bottom:1px solid var(--border);}
+.wing-slot:last-child{border-bottom:none;}
+.wing-slot-hdr{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;cursor:pointer;user-select:none;}
+.wing-slot-hdr:hover{background:rgba(0,0,0,0.025);}
+.wing-slot-ttl{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;color:var(--text);letter-spacing:0.1em;text-transform:uppercase;}
+.wing-slot-acts{display:flex;gap:4px;}
+.slot-btn{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border:1px solid var(--border);border-radius:3px;background:transparent;cursor:pointer;color:var(--text2);transition:all 0.12s;}
+.slot-btn:hover{color:var(--text);border-color:var(--border2);}
+.slot-btn.rm:hover{color:var(--red);border-color:var(--red);}
+.wing-slot-body{padding:0 14px 10px;display:none;}
+.wing-slot-body.open{display:block;}
+.add-wing-btn{
+  display:block;margin:8px 14px;padding:8px;
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;
+  border:1px dashed var(--border2);border-radius:5px;background:transparent;
+  cursor:pointer;color:var(--text3);width:calc(100% - 28px);transition:all 0.15s;
 }
-.modal-backdrop.open { display: flex; }
-.modal {
-  background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg);
-  padding: 24px; width: 320px; display: flex; flex-direction: column; gap: 16px;
-}
-.modal-title { font-size: 14px; font-weight: 500; }
-.modal-desc { font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.6; }
-.modal input {
-  width: 100%; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius);
-  background: var(--bg2); color: var(--text); font-family: var(--font); font-size: 13px;
-}
-.modal input:focus { outline: none; border-color: var(--text); }
-.modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.add-wing-btn:hover:not(:disabled){color:var(--text);border-color:var(--accent);}
+.add-wing-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.sidebar-tip{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);padding:12px 14px;line-height:1.7;}
 
-/* ── lightkeeper view modal ── */
-.view-modal {
-  background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg);
-  padding: 32px; display: flex; flex-direction: column; align-items: center; gap: 20px;
-  min-width: 280px;
+/* canvas */
+.canvas-area{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.canvas-area::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);
+  background-size:24px 24px;opacity:0.6;pointer-events:none;
 }
-.view-modal-name { font-size: 15px; font-weight: 500; }
-.view-modal-meta { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+#stage{overflow:visible;position:relative;z-index:1;}
+
+/* ─────────────────────────────────────────
+   LOUNGE
+───────────────────────────────────────── */
+.lounge-page{flex-direction:column;width:100%;height:100%;}
+.lounge-hdr{
+  flex-shrink:0;padding:20px 28px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+.lounge-title{font-size:22px;font-weight:700;letter-spacing:0.04em;margin-bottom:3px;}
+.lounge-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.05em;}
+.lounge-body{flex:1;overflow-y:auto;padding:24px 28px;}
+.lounge-body::-webkit-scrollbar{width:4px;}
+.lounge-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.lounge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.lounge-empty{
+  grid-column:1/-1;text-align:center;padding:80px 20px;
+  color:var(--text3);font-family:'DM Mono',monospace;font-size:11px;line-height:2.2;
+}
+.lounge-card{
+  border:1px solid var(--border);border-radius:10px;
+  background:var(--bg2);overflow:hidden;cursor:pointer;
+  transition:all 0.18s;display:flex;flex-direction:column;
+}
+.lounge-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.08);}
+.lounge-card-cv{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);border-bottom:1px solid var(--border);padding:8px;position:relative;
+}
+.lounge-card-cv svg{overflow:visible;}
+.lounge-card-info{padding:10px 12px 4px;}
+.lounge-card-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lounge-card-date{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);}
+.lounge-card-foot{display:flex;justify-content:flex-end;padding:6px 12px 10px;}
+.del-btn{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.04em;
+  padding:2px 8px;border:1px solid transparent;border-radius:3px;
+  background:transparent;cursor:pointer;color:var(--text3);transition:all 0.12s;
+}
+.del-btn:hover{color:var(--red);border-color:var(--red);}
+
+/* ── MODALS ── */
+.modal-bg{
+  display:none;position:fixed;inset:0;
+  background:rgba(28,26,23,0.4);backdrop-filter:blur(4px);
+  z-index:100;align-items:center;justify-content:center;
+}
+.modal-bg.open{display:flex;}
+.modal{
+  background:var(--bg);border:1px solid var(--border);border-radius:12px;
+  padding:28px;display:flex;flex-direction:column;gap:18px;
+  box-shadow:0 24px 64px rgba(0,0,0,0.15);
+}
+.modal-title{font-size:15px;font-weight:700;letter-spacing:0.02em;}
+.modal-desc{font-family:'DM Mono',monospace;font-size:10px;color:var(--text2);line-height:1.7;}
+.modal input[type=text]{
+  width:100%;padding:10px 12px;
+  border:1px solid var(--border2);border-radius:6px;
+  background:var(--bg2);color:var(--text);
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:500;
+  outline:none;transition:border-color 0.15s;
+}
+.modal input[type=text]:focus{border-color:var(--accent);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
+
+.view-modal{
+  background:var(--bg);border:1px solid var(--border);border-radius:12px;
+  padding:36px;display:flex;flex-direction:column;align-items:center;gap:20px;
+  box-shadow:0 24px 64px rgba(0,0,0,0.15);min-width:300px;
+}
+.view-modal-name{font-size:16px;font-weight:700;}
+.view-modal-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);}
 </style>
+</head>
+<body>
 
-<h2 class="sr-only">LightKeeper — 캐릭터 빌더와 라운지. 파츠를 조합해 캐릭터를 만들고 라운지에 저장, 공유하세요.</h2>
-
-<!-- Nav -->
+<!-- NAV -->
 <div class="nav">
-  <span class="nav-brand">LIGHTKEEPER</span>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="goPage('builder')">Builder</button>
-    <button class="nav-tab" onclick="goPage('lounge')">Lounge <span id="lounge-count" style="font-family:var(--mono);font-size:10px;opacity:0.5;"></span></button>
+  <div class="nav-brand">
+    LightKeeper
+    <span class="nav-brand-sub">Character Builder</span>
   </div>
-  <div class="nav-actions">
+  <div class="nav-center">
+    <button class="nav-tab active" onclick="goPage('builder')">Builder</button>
+    <button class="nav-tab" id="tab-lounge" onclick="goPage('lounge')">Lounge <span class="count" id="lounge-count"></span></button>
+  </div>
+  <div class="nav-right">
     <button class="btn" onclick="randomize()">랜덤</button>
-    <button class="btn btn-dark" onclick="openSaveModal()">라운지에 저장 →</button>
+    <button class="btn btn-primary" onclick="openSaveModal()">라운지에 저장 →</button>
   </div>
 </div>
 
-<!-- Builder Page -->
+<!-- BUILDER PAGE -->
 <div class="page active" id="page-builder">
-  <div class="builder">
-    <div class="sidebar">
-      <div class="tab-row">
-        <button class="tab active" onclick="switchTab('parts')">파츠</button>
-        <button class="tab" onclick="switchTab('adjust')">조정</button>
+<div class="builder">
+  <div class="sidebar">
+    <div class="tab-row">
+      <button class="stab active" onclick="switchTab('parts')">파츠 선택</button>
+      <button class="stab" onclick="switchTab('adjust')">위치 조정</button>
+    </div>
+
+    <!-- 파츠 탭 -->
+    <div id="tab-parts" class="ctrl-section active">
+      <div class="category">
+        <div class="cat-label">Frame</div>
+        <div class="parts-grid" id="frame-grid"></div>
       </div>
-      <div id="tab-parts" class="ctrl-section active">
-        <div class="category"><div class="cat-label">Frame</div><div class="parts-grid" id="frame-grid"></div></div>
-        <div class="category"><div class="cat-label">Eye</div><div class="parts-grid" id="eye-grid"></div></div>
-        <div class="category" style="padding-bottom:0;">
-          <div class="cat-label" style="padding:0 0 8px;">Wing</div>
-          <div id="wing-slots"></div>
-          <button class="add-wing-btn" id="add-wing-btn" onclick="addWingSlot()">+ 날개 추가</button>
-        </div>
-        <div class="category">
-          <div class="cat-label">Tail</div>
-          <div class="parts-grid" id="tail-grid"></div>
-          <div id="tail-sym-row" style="margin-top:8px;display:none;">
-            <div class="ctrl-row">
-              <span class="ctrl-label">배치</span>
-              <div class="btn-group">
-                <button class="tog-btn active" id="tail-sym-off" onclick="setTailSym(false)">한쪽</button>
-                <button class="tog-btn" id="tail-sym-on" onclick="setTailSym(true)">대칭</button>
-              </div>
+      <div class="category">
+        <div class="cat-label">Eye</div>
+        <div class="parts-grid" id="eye-grid"></div>
+      </div>
+      <div class="category" style="padding-bottom:0;">
+        <div class="cat-label" style="padding:0 0 9px;">Wing</div>
+        <div id="wing-slots"></div>
+        <button class="add-wing-btn" id="add-wing-btn" onclick="addWingSlot()">+ 날개 추가</button>
+      </div>
+      <div class="category">
+        <div class="cat-label">Tail</div>
+        <div class="parts-grid" id="tail-grid"></div>
+        <div id="tail-sym-row" style="margin-top:9px;display:none;">
+          <div class="ctrl-row">
+            <span class="ctrl-lbl">배치</span>
+            <div class="btn-group">
+              <button class="tog-btn active" id="tail-sym-off" onclick="setTailSym(false)">한쪽</button>
+              <button class="tog-btn" id="tail-sym-on" onclick="setTailSym(true)">대칭</button>
             </div>
           </div>
         </div>
       </div>
-      <div id="tab-adjust" class="ctrl-section">
-        <div class="ctrl-group">
-          <div class="cat-label" style="margin-bottom:8px;">Frame</div>
-          <div class="ctrl-row"><span class="ctrl-label">크기</span><input type="range" min="60" max="140" value="100" step="1" oninput="updateCtrl('frame','scale',this.value)"/><span class="ctrl-val" id="frame-scale-val">100%</span></div>
-        </div>
-        <div class="ctrl-group">
-          <div class="cat-label" style="margin-bottom:8px;">Eye</div>
-          <div class="ctrl-row"><span class="ctrl-label">X</span><input type="range" min="-50" max="50" value="0" step="1" oninput="updateCtrl('eye','x',this.value)"/><span class="ctrl-val" id="eye-x-val">0</span></div>
-          <div class="ctrl-row"><span class="ctrl-label">Y</span><input type="range" min="-50" max="50" value="0" step="1" oninput="updateCtrl('eye','y',this.value)"/><span class="ctrl-val" id="eye-y-val">0</span></div>
-          <div class="ctrl-row"><span class="ctrl-label">크기</span><input type="range" min="30" max="160" value="100" step="1" oninput="updateCtrl('eye','scale',this.value)"/><span class="ctrl-val" id="eye-scale-val">100%</span></div>
-          <div class="ctrl-row"><span class="ctrl-label">회전</span><input type="range" min="-180" max="180" value="0" step="1" oninput="updateCtrl('eye','rot',this.value)"/><span class="ctrl-val" id="eye-rot-val">0°</span></div>
-        </div>
-        <div id="adjust-wings-area"></div>
-        <div class="ctrl-group" id="adjust-tail-area" style="display:none;">
-          <div class="cat-label" style="margin-bottom:8px;">Tail</div>
-          <div class="ctrl-row"><span class="ctrl-label">X</span><input type="range" min="-80" max="80" value="0" step="1" oninput="updateTailCtrl('x',this.value)"/><span class="ctrl-val" id="tail-x-val">0</span></div>
-          <div class="ctrl-row"><span class="ctrl-label">Y</span><input type="range" min="-20" max="120" value="55" step="1" oninput="updateTailCtrl('y',this.value)"/><span class="ctrl-val" id="tail-y-val">55</span></div>
-          <div class="ctrl-row"><span class="ctrl-label">크기</span><input type="range" min="30" max="300" value="100" step="1" oninput="updateTailCtrl('scale',this.value)"/><span class="ctrl-val" id="tail-scale-val">100%</span></div>
-          <div class="ctrl-row"><span class="ctrl-label">회전</span><input type="range" min="-180" max="180" value="0" step="1" oninput="updateTailCtrl('rot',this.value)"/><span class="ctrl-val" id="tail-rot-val">0°</span></div>
-        </div>
-        <p class="tip">슬라이더로 각 파츠의 위치, 크기, 회전을 조절하세요.</p>
-      </div>
     </div>
-    <div class="canvas-area">
-      <div class="canvas-wrap">
-        <svg id="stage" width="300" height="300" viewBox="-150 -150 300 300">
-          <g id="g-wings"></g>
-          <g id="g-tail"></g>
-          <g id="g-frame"></g>
-          <g id="g-eye"></g>
-        </svg>
+
+    <!-- 조정 탭 -->
+    <div id="tab-adjust" class="ctrl-section">
+      <div class="ctrl-group">
+        <div class="cat-label" style="margin-bottom:8px;">Frame</div>
+        <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="60" max="140" value="100" step="1" oninput="uc('frame','scale',this.value)"/><span class="ctrl-val" id="frame-scale-val">100%</span></div>
       </div>
+      <div class="ctrl-group">
+        <div class="cat-label" style="margin-bottom:8px;">Eye</div>
+        <div class="ctrl-row"><span class="ctrl-lbl">X</span><input type="range" min="-50" max="50" value="0" step="1" oninput="uc('eye','x',this.value)"/><span class="ctrl-val" id="eye-x-val">0</span></div>
+        <div class="ctrl-row"><span class="ctrl-lbl">Y</span><input type="range" min="-50" max="50" value="0" step="1" oninput="uc('eye','y',this.value)"/><span class="ctrl-val" id="eye-y-val">0</span></div>
+        <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="30" max="160" value="100" step="1" oninput="uc('eye','scale',this.value)"/><span class="ctrl-val" id="eye-scale-val">100%</span></div>
+        <div class="ctrl-row"><span class="ctrl-lbl">회전</span><input type="range" min="-180" max="180" value="0" step="1" oninput="uc('eye','rot',this.value)"/><span class="ctrl-val" id="eye-rot-val">0°</span></div>
+      </div>
+      <div id="adjust-wings-area"></div>
+      <div class="ctrl-group" id="adjust-tail-area" style="display:none;">
+        <div class="cat-label" style="margin-bottom:8px;">Tail</div>
+        <div class="ctrl-row"><span class="ctrl-lbl">X</span><input type="range" min="-80" max="80" value="0" step="1" oninput="utc('x',this.value)"/><span class="ctrl-val" id="tail-x-val">0</span></div>
+        <div class="ctrl-row"><span class="ctrl-lbl">Y</span><input type="range" min="-20" max="120" value="55" step="1" oninput="utc('y',this.value)"/><span class="ctrl-val" id="tail-y-val">55</span></div>
+        <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="30" max="300" value="100" step="1" oninput="utc('scale',this.value)"/><span class="ctrl-val" id="tail-scale-val">100%</span></div>
+        <div class="ctrl-row"><span class="ctrl-lbl">회전</span><input type="range" min="-180" max="180" value="0" step="1" oninput="utc('rot',this.value)"/><span class="ctrl-val" id="tail-rot-val">0°</span></div>
+      </div>
+      <p class="sidebar-tip">슬라이더로 각 파츠의<br>위치·크기·회전을 조절하세요.</p>
     </div>
   </div>
+
+  <div class="canvas-area">
+    <svg id="stage" width="340" height="340" viewBox="-170 -170 340 340">
+      <g id="g-wings"></g>
+      <g id="g-tail"></g>
+      <g id="g-frame"></g>
+      <g id="g-eye"></g>
+    </svg>
+  </div>
+</div>
 </div>
 
-<!-- Lounge Page -->
+<!-- LOUNGE PAGE -->
 <div class="page" id="page-lounge">
-  <div class="lounge-page" style="display:flex;">
-    <div class="lounge-header">
+<div class="lounge-page">
+  <div class="lounge-hdr">
+    <div>
       <div class="lounge-title">Lightkeeper Lounge</div>
       <div class="lounge-sub" id="lounge-sub">라운지에 저장된 Lightkeeper들을 만나보세요</div>
     </div>
-    <div class="lounge-body">
-      <div class="lounge-grid" id="lounge-grid">
-        <div class="lounge-empty" id="lounge-empty">
-          아직 저장된 Lightkeeper가 없어요.<br>Builder에서 캐릭터를 만들고 라운지에 저장해보세요!
-        </div>
-      </div>
-    </div>
+  </div>
+  <div class="lounge-body">
+    <div class="lounge-grid" id="lounge-grid"></div>
   </div>
 </div>
+</div>
 
-<!-- Save Modal -->
-<div class="modal-backdrop" id="save-modal">
-  <div class="modal">
+<!-- SAVE MODAL -->
+<div class="modal-bg" id="save-modal">
+  <div class="modal" style="width:320px;">
     <div>
       <div class="modal-title">라운지에 저장하기</div>
       <div class="modal-desc" style="margin-top:6px;">만든 사람의 이름을 입력하면<br>라운지에 저장됩니다.</div>
     </div>
-    <input type="text" id="creator-name" placeholder="이름을 입력하세요" maxlength="20" onkeydown="if(event.key==='Enter') saveToLounge()"/>
+    <input type="text" id="creator-name" placeholder="이름을 입력하세요" maxlength="20"
+      onkeydown="if(event.key==='Enter')saveToLounge()"/>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal('save-modal')">취소</button>
-      <button class="btn btn-dark" onclick="saveToLounge()">저장</button>
+      <button class="btn btn-primary" onclick="saveToLounge()">저장하기</button>
     </div>
   </div>
 </div>
 
-<!-- View Modal -->
-<div class="modal-backdrop" id="view-modal">
+<!-- VIEW MODAL -->
+<div class="modal-bg" id="view-modal">
   <div class="view-modal">
-    <svg id="view-stage" width="220" height="220" viewBox="-150 -150 300 300" style="overflow:visible;"></svg>
+    <svg id="view-stage" width="240" height="240" viewBox="-150 -150 300 300" style="overflow:visible;"></svg>
     <div style="text-align:center;">
       <div class="view-modal-name" id="view-name"></div>
-      <div class="view-modal-meta" id="view-meta"></div>
+      <div class="view-modal-date" id="view-date"></div>
     </div>
-    <div class="modal-actions" style="width:100%;justify-content:center;">
+    <div class="modal-actions">
       <button class="btn" onclick="closeModal('view-modal')">닫기</button>
+      <button class="btn btn-primary" onclick="exportFromView()">SVG 저장</button>
     </div>
   </div>
 </div>
 
 <script>
-function nc(html) {
-  return html
-    .replace(/fill="#[0-9a-fA-F]{3,6}"/g,'fill="currentColor"')
-    .replace(/stroke="#[0-9a-fA-F]{3,6}"/g,'stroke="currentColor"')
-    .replace(/fill="black"/g,'fill="currentColor"')
-    .replace(/stroke="black"/g,'stroke="currentColor"');
-}
-function vbt(vb, size) {
-  const [x,y,w,h]=vb, sc=size/Math.max(w,h);
-  return `translate(${-(x+w/2)*sc},${-(y+h/2)*sc}) scale(${sc})`;
-}
+// ── helpers ──
+function nc(h){return h.replace(/fill="#[0-9a-fA-F]{3,6}"/g,'fill="currentColor"').replace(/stroke="#[0-9a-fA-F]{3,6}"/g,'stroke="currentColor"').replace(/fill="black"/g,'fill="currentColor"').replace(/stroke="black"/g,'stroke="currentColor"');}
+function vbt(vb,sz){const[x,y,w,h]=vb,sc=sz/Math.max(w,h);return `translate(${-(x+w/2)*sc},${-(y+h/2)*sc}) scale(${sc})`;}
+function mkG(ns){return document.createElementNS(ns,'g');}
 
+// ── DATA ──
 const FRAMES=[
   {id:'none',label:'없음',vb:null,content:null},
   {id:'frame_01',label:'F01',vb:[0,0,119.31,119.31],content:`<path d="M98,14c4.03,0,7.31,3.28,7.31,7.31v76.69c0,4.03-3.28,7.31-7.31,7.31H21.31c-4.03,0-7.31-3.28-7.31-7.31V21.31c0-4.03,3.28-7.31,7.31-7.31h76.69M98,0H21.31C9.54,0,0,9.54,0,21.31v76.69c0,11.77,9.54,21.31,21.31,21.31h76.69c11.77,0,21.31-9.54,21.31-21.31V21.31c0-11.77-9.54-21.31-21.31-21.31h0Z" fill="currentColor"/>`},
   {id:'frame_02',label:'F02',vb:[0,0,119.31,119.31],content:`<path d="M59.65,15c24.62,0,44.65,20.03,44.65,44.65s-20.03,44.65-44.65,44.65S15,84.28,15,59.65,35.03,15,59.65,15M59.65,0C26.71,0,0,26.71,0,59.65s26.71,59.65,59.65,59.65,59.65-26.71,59.65-59.65S92.6,0,59.65,0h0Z" fill="currentColor"/>`},
   {id:'frame_03',label:'F03',vb:[0,0,132.1,119.31],content:`<path d="M69.33,14c26.89,0,48.77,21.88,48.77,48.77v34.12c0,4.64-3.78,8.42-8.42,8.42H22.42c-4.64,0-8.42-3.78-8.42-8.42v-34.12c0-26.89,21.88-48.77,48.77-48.77h6.56M69.33,0h-6.56C28.1,0,0,28.1,0,62.77v34.12c0,12.38,10.04,22.42,22.42,22.42h87.26c12.38,0,22.42-10.04,22.42-22.42v-34.12C132.1,28.1,103.99,0,69.33,0h0Z" fill="currentColor"/>`},
   {id:'frame_04',label:'F04',vb:[0,0,118.72,141.61],content:`<path d="M15.07,63.81c2.76-27.48,21.57-48.81,44.29-48.81s41.53,21.33,44.29,48.81h15.07C115.76,27.99,90.32,0,59.36,0S2.96,27.99,0,63.81h15.07Z" fill="currentColor"/><path d="M103.65,77.8c-2.76,27.48-21.57,48.81-44.29,48.81s-41.53-21.33-44.29-48.81H0c2.96,35.82,28.41,63.81,59.36,63.81s56.4-27.99,59.36-63.81h-15.07Z" fill="currentColor"/>`},
-  {id:'frame_05',label:'F05',vb:[0,0,119.31,119.31],content:`<circle cx="59.65" cy="59.65" r="59.65" fill="currentColor"/><circle cx="59.65" cy="47.84" r="38.54" fill="var(--color-background-primary)"/>`},
+  {id:'frame_05',label:'F05',vb:[0,0,119.31,119.31],content:`<circle cx="59.65" cy="59.65" r="59.65" fill="currentColor"/><circle cx="59.65" cy="47.84" r="38.54" fill="#f5f3ef"/>`},
 ];
 const EYES=[
   {id:'none',label:'없음',vb:null,content:null},
@@ -363,256 +415,249 @@ const TAILS=[
   {id:'tail_07',label:'T07',vb:[0,0,28.09,28.09],content:`<path d="M14.04,0c-.33,7.62-6.43,13.72-14.04,14.04,7.62.33,13.72,6.43,14.04,14.04.33-7.62,6.43-13.72,14.04-14.04-7.62-.33-13.72-6.43-14.04-14.04Z" fill="#231f20"/>`},
 ];
 
-const DWS=150, DTX=95;
+const DWS=150,DTX=95;
 let wingSlots=[{id:0,wingId:'wing_07',x:0,y:0,scale:DWS,rot:0,flip:0,symmetric:false,open:true}];
 let nextSlotId=1;
-const state={frame:{id:'frame_02',scale:100},eye:{id:'eye_02',x:0,y:0,scale:100,rot:0},tail:{id:'none',x:0,y:55,scale:100,rot:0,symmetric:false}};
-
+const ST={frame:{id:'frame_02',scale:100},eye:{id:'eye_02',x:0,y:0,scale:100,rot:0},tail:{id:'none',x:0,y:55,scale:100,rot:0,symmetric:false}};
 let loungeItems=[];
+let viewingItem=null;
 
-function goPage(p) {
+// ── STORAGE (localStorage fallback) ──
+const STORAGE_KEY='lk-lounge-v1';
+function saveStorage(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(loungeItems));}catch(e){}}
+function loadStorage(){try{const d=localStorage.getItem(STORAGE_KEY);if(d)loungeItems=JSON.parse(d);}catch(e){loungeItems=[];}}
+
+// ── NAV ──
+function goPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
-  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',[p==='builder',p==='lounge'][i]));
-  if(p==='lounge') renderLounge();
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.nav-tab[onclick*="${p}"]`).classList.add('active');
+  if(p==='lounge')renderLounge();
 }
 
-function switchTab(t) {
-  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.textContent.includes(t==='parts'?'파츠':'조정')));
+// ── BUILDER TABS ──
+function switchTab(t){
+  document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('active',b.textContent.includes(t==='parts'?'파츠':'위치')));
   document.querySelectorAll('.ctrl-section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
-  if(t==='adjust') renderAdjustWings();
+  if(t==='adjust')renderAdjustWings();
 }
 
-function buildGrid(gridId, parts, category) {
-  const grid=document.getElementById(gridId); if(!grid) return;
+// ── GRIDS ──
+function buildGrid(gId,parts,cat){
+  const grid=document.getElementById(gId);if(!grid)return;
   grid.innerHTML='';
   const ns='http://www.w3.org/2000/svg';
   parts.forEach(p=>{
     const btn=document.createElement('button');
-    btn.className='part-btn'+(state[category]&&state[category].id===p.id?' selected':'');
-    if(!p.content){btn.innerHTML='<span style="font-family:var(--mono);font-size:9px;color:var(--text3)">없음</span>';}
+    btn.className='part-btn'+(ST[cat]&&ST[cat].id===p.id?' selected':'');
+    if(!p.content){btn.innerHTML='<span class="nl">없음</span>';}
     else{const s=document.createElementNS(ns,'svg');s.setAttribute('viewBox',`${p.vb[0]} ${p.vb[1]} ${p.vb[2]} ${p.vb[3]}`);s.innerHTML=nc(p.content);btn.appendChild(s);}
     btn.onclick=()=>{
-      state[category].id=p.id; buildGrid(gridId,parts,category);
-      if(category==='tail'){const h=p.id!=='none';document.getElementById('tail-sym-row').style.display=h?'block':'none';const a=document.getElementById('adjust-tail-area');if(a)a.style.display=h?'block':'none';}
+      ST[cat].id=p.id;buildGrid(gId,parts,cat);
+      if(cat==='tail'){const h=p.id!=='none';document.getElementById('tail-sym-row').style.display=h?'block':'none';const a=document.getElementById('adjust-tail-area');if(a)a.style.display=h?'block':'none';}
       render();
     };
     grid.appendChild(btn);
   });
 }
 
-function setTailSym(v){state.tail.symmetric=v;document.getElementById('tail-sym-off').classList.toggle('active',!v);document.getElementById('tail-sym-on').classList.toggle('active',v);render();}
+function setTailSym(v){ST.tail.symmetric=v;document.getElementById('tail-sym-off').classList.toggle('active',!v);document.getElementById('tail-sym-on').classList.toggle('active',v);render();}
 
+// ── WING SLOTS ──
 function buildWingSlots(){
-  const c=document.getElementById('wing-slots'); c.innerHTML='';
+  const c=document.getElementById('wing-slots');c.innerHTML='';
   const ns='http://www.w3.org/2000/svg';
   wingSlots.forEach((slot,idx)=>{
     const wrap=document.createElement('div');wrap.className='wing-slot';
-    const hdr=document.createElement('div');hdr.className='wing-slot-header';
-    const ttl=document.createElement('span');ttl.className='wing-slot-title';ttl.textContent=`Wing ${idx+1}`;
-    const acts=document.createElement('div');acts.className='wing-slot-actions';
-    if(wingSlots.length>1){const r=document.createElement('button');r.className='slot-action-btn remove';r.textContent='제거';r.onclick=e=>{e.stopPropagation();removeWingSlot(slot.id);};acts.appendChild(r);}
-    const t=document.createElement('button');t.className='slot-action-btn';t.textContent=slot.open?'접기':'펼치기';t.onclick=e=>{e.stopPropagation();slot.open=!slot.open;buildWingSlots();};acts.appendChild(t);
+    const hdr=document.createElement('div');hdr.className='wing-slot-hdr';
+    const ttl=document.createElement('span');ttl.className='wing-slot-ttl';ttl.textContent=`Wing ${idx+1}`;
+    const acts=document.createElement('div');acts.className='wing-slot-acts';
+    if(wingSlots.length>1){const r=document.createElement('button');r.className='slot-btn rm';r.textContent='제거';r.onclick=e=>{e.stopPropagation();removeWingSlot(slot.id);};acts.appendChild(r);}
+    const t=document.createElement('button');t.className='slot-btn';t.textContent=slot.open?'접기':'펼치기';
+    t.onclick=e=>{e.stopPropagation();slot.open=!slot.open;buildWingSlots();};acts.appendChild(t);
     hdr.appendChild(ttl);hdr.appendChild(acts);hdr.onclick=()=>{slot.open=!slot.open;buildWingSlots();};wrap.appendChild(hdr);
     const body=document.createElement('div');body.className='wing-slot-body'+(slot.open?' open':'');
     const grid=document.createElement('div');grid.className='slot-parts-grid';
-    WINGS.forEach(p=>{const btn=document.createElement('button');btn.className='part-btn'+(slot.wingId===p.id?' selected':'');if(!p.content){btn.innerHTML='<span style="font-family:var(--mono);font-size:9px;color:var(--text3)">없음</span>';}else{const s=document.createElementNS(ns,'svg');s.setAttribute('viewBox',`${p.vb[0]} ${p.vb[1]} ${p.vb[2]} ${p.vb[3]}`);s.innerHTML=nc(p.content);btn.appendChild(s);}btn.onclick=()=>{slot.wingId=p.id;buildWingSlots();render();};grid.appendChild(btn);});
+    WINGS.forEach(p=>{
+      const btn=document.createElement('button');btn.className='part-btn'+(slot.wingId===p.id?' selected':'');
+      if(!p.content){btn.innerHTML='<span class="nl">없음</span>';}
+      else{const s=document.createElementNS(ns,'svg');s.setAttribute('viewBox',`${p.vb[0]} ${p.vb[1]} ${p.vb[2]} ${p.vb[3]}`);s.innerHTML=nc(p.content);btn.appendChild(s);}
+      btn.onclick=()=>{slot.wingId=p.id;buildWingSlots();render();};grid.appendChild(btn);
+    });
     body.appendChild(grid);
-    const fr=document.createElement('div');fr.className='ctrl-row';fr.innerHTML=`<span class="ctrl-label">뒤집기</span>`;
+    const fr=document.createElement('div');fr.className='ctrl-row';fr.innerHTML='<span class="ctrl-lbl">뒤집기</span>';
     const fg=document.createElement('div');fg.className='btn-group';
     ['오른쪽','왼쪽'].forEach((l,v)=>{const b=document.createElement('button');b.className='tog-btn'+(slot.flip===v?' active':'');b.textContent=l;b.onclick=()=>{slot.flip=v;buildWingSlots();render();};fg.appendChild(b);});
     fr.appendChild(fg);body.appendChild(fr);
-    const sr=document.createElement('div');sr.className='ctrl-row';sr.style.marginTop='5px';sr.innerHTML=`<span class="ctrl-label">배치</span>`;
+    const sr=document.createElement('div');sr.className='ctrl-row';sr.style.marginTop='5px';sr.innerHTML='<span class="ctrl-lbl">배치</span>';
     const sg=document.createElement('div');sg.className='btn-group';
     [['한쪽',false],['대칭',true]].forEach(([l,v])=>{const b=document.createElement('button');b.className='tog-btn'+(slot.symmetric===v?' active':'');b.textContent=l;b.onclick=()=>{slot.symmetric=v;buildWingSlots();render();};sg.appendChild(b);});
     sr.appendChild(sg);body.appendChild(sr);wrap.appendChild(body);c.appendChild(wrap);
   });
-  const ab=document.getElementById('add-wing-btn');ab.disabled=wingSlots.length>=3;ab.textContent=wingSlots.length>=3?'날개 최대 3쌍':'+ 날개 추가';
+  const ab=document.getElementById('add-wing-btn');
+  ab.disabled=wingSlots.length>=3;ab.textContent=wingSlots.length>=3?'날개 최대 3쌍':'+ 날개 추가';
 }
 
 function addWingSlot(){if(wingSlots.length>=3)return;wingSlots.push({id:nextSlotId++,wingId:WINGS[1+Math.floor(Math.random()*(WINGS.length-1))].id,x:0,y:-15*wingSlots.length,scale:DWS,rot:0,flip:0,symmetric:false,open:true});buildWingSlots();renderAdjustWings();render();}
 function removeWingSlot(id){wingSlots=wingSlots.filter(s=>s.id!==id);buildWingSlots();renderAdjustWings();render();}
 
+// ── ADJUST ──
 function renderAdjustWings(){
   const a=document.getElementById('adjust-wings-area');if(!a)return;a.innerHTML='';
   wingSlots.forEach((slot,idx)=>{
     const g=document.createElement('div');g.className='ctrl-group';
     g.innerHTML=`<div class="cat-label" style="margin-bottom:8px;">Wing ${idx+1}</div>
-    <div class="ctrl-row"><span class="ctrl-label">X</span><input type="range" min="-130" max="130" value="${slot.x}" step="1" oninput="updateWingCtrl(${slot.id},'x',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-x">${slot.x}</span></div>
-    <div class="ctrl-row"><span class="ctrl-label">Y</span><input type="range" min="-130" max="130" value="${slot.y}" step="1" oninput="updateWingCtrl(${slot.id},'y',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-y">${slot.y}</span></div>
-    <div class="ctrl-row"><span class="ctrl-label">크기</span><input type="range" min="40" max="250" value="${slot.scale}" step="1" oninput="updateWingCtrl(${slot.id},'scale',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-scale">${slot.scale}%</span></div>
-    <div class="ctrl-row"><span class="ctrl-label">회전</span><input type="range" min="-180" max="180" value="${slot.rot}" step="1" oninput="updateWingCtrl(${slot.id},'rot',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-rot">${slot.rot}°</span></div>`;
+    <div class="ctrl-row"><span class="ctrl-lbl">X</span><input type="range" min="-130" max="130" value="${slot.x}" step="1" oninput="uwc(${slot.id},'x',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-x">${slot.x}</span></div>
+    <div class="ctrl-row"><span class="ctrl-lbl">Y</span><input type="range" min="-130" max="130" value="${slot.y}" step="1" oninput="uwc(${slot.id},'y',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-y">${slot.y}</span></div>
+    <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="40" max="250" value="${slot.scale}" step="1" oninput="uwc(${slot.id},'scale',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-scale">${slot.scale}%</span></div>
+    <div class="ctrl-row"><span class="ctrl-lbl">회전</span><input type="range" min="-180" max="180" value="${slot.rot}" step="1" oninput="uwc(${slot.id},'rot',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-rot">${slot.rot}°</span></div>`;
     a.appendChild(g);
   });
 }
+function uwc(id,prop,val){val=parseFloat(val);const s=wingSlots.find(s=>s.id===id);if(!s)return;s[prop]=val;const el=document.getElementById(`wc-${id}-${prop}`);if(el)el.textContent=prop==='scale'?val+'%':prop==='rot'?val+'°':val+'';render();}
+function utc(prop,val){val=parseFloat(val);ST.tail[prop]=val;const el=document.getElementById(`tail-${prop}-val`);if(el)el.textContent=prop==='scale'?val+'%':prop==='rot'?val+'°':val+'';render();}
+function uc(cat,prop,val){val=parseFloat(val);ST[cat][prop]=val;const el=document.getElementById(`${cat}-${prop}-val`);if(el)el.textContent=prop==='scale'?Math.round(val)+'%':prop==='rot'?Math.round(val)+'°':Math.round(val)+'';render();}
 
-function updateWingCtrl(id,prop,val){val=parseFloat(val);const s=wingSlots.find(s=>s.id===id);if(!s)return;s[prop]=val;const el=document.getElementById(`wc-${id}-${prop}`);if(el)el.textContent=prop==='scale'?val+'%':prop==='rot'?val+'°':val+'';render();}
-function updateTailCtrl(prop,val){val=parseFloat(val);state.tail[prop]=val;const el=document.getElementById(`tail-${prop}-val`);if(el)el.textContent=prop==='scale'?val+'%':prop==='rot'?val+'°':val+'';render();}
-function updateCtrl(cat,prop,val){val=parseFloat(val);state[cat][prop]=val;const el=document.getElementById(`${cat}-${prop}-val`);if(el)el.textContent=prop==='scale'?Math.round(val)+'%':prop==='rot'?Math.round(val)+'°':Math.round(val)+'';render();}
-
-function rp(pg, def, transform, size) {
+// ── RENDER ──
+function rp(pg,def,tr,sz){
   if(!def||!def.content)return;
   const ns='http://www.w3.org/2000/svg';
-  const o=document.createElementNS(ns,'g');o.setAttribute('transform',transform);
-  const i=document.createElementNS(ns,'g');i.setAttribute('transform',vbt(def.vb,size));
+  const o=document.createElementNS(ns,'g');o.setAttribute('transform',tr);
+  const i=document.createElementNS(ns,'g');i.setAttribute('transform',vbt(def.vb,sz));
   i.innerHTML=nc(def.content);o.appendChild(i);pg.appendChild(o);
 }
 
-function buildSVGContent(targetId) {
+function renderTo(ids){
   const ns='http://www.w3.org/2000/svg';
-  const makeG=id=>{const g=document.createElementNS(ns,'g');g.id=id+'_tmp';return g;};
-  const wg=makeG('w'),tg=makeG('t'),fg=makeG('f'),eg=makeG('e');
+  ids.wings.innerHTML='';ids.tail.innerHTML='';ids.frame.innerHTML='';ids.eye.innerHTML='';
   wingSlots.forEach(slot=>{
     const def=WINGS.find(p=>p.id===slot.wingId);if(!def||!def.content)return;
     const sc=slot.scale/100,flip=slot.flip?-1:1,tx=DTX+slot.x,ty=slot.y;
-    rp(wg,def,`translate(${tx},${ty}) rotate(${slot.rot}) scale(${flip*sc},${sc})`,100);
-    if(slot.symmetric)rp(wg,def,`translate(${-tx},${ty}) rotate(${-slot.rot}) scale(${-flip*sc},${sc})`,100);
+    rp(ids.wings,def,`translate(${tx},${ty}) rotate(${slot.rot}) scale(${flip*sc},${sc})`,100);
+    if(slot.symmetric)rp(ids.wings,def,`translate(${-tx},${ty}) rotate(${-slot.rot}) scale(${-flip*sc},${sc})`,100);
   });
-  const td=TAILS.find(p=>p.id===state.tail.id);
-  if(td&&td.content){const t=state.tail,sc=t.scale/100;rp(tg,td,`translate(${t.x},${t.y}) rotate(${t.rot}) scale(${sc})`,40);if(t.symmetric)rp(tg,td,`translate(${-t.x},${t.y}) rotate(${-t.rot}) scale(${-sc},${sc})`,40);}
-  const fd=FRAMES.find(p=>p.id===state.frame.id);if(fd&&fd.content)rp(fg,fd,`scale(${state.frame.scale/100})`,120);
-  const ed=EYES.find(p=>p.id===state.eye.id);if(ed&&ed.content){const e=state.eye;rp(eg,ed,`translate(${e.x},${e.y}) rotate(${e.rot}) scale(${e.scale/100})`,50);}
-  return {wg,tg,fg,eg};
+  const td=TAILS.find(p=>p.id===ST.tail.id);
+  if(td&&td.content){const t=ST.tail,sc=t.scale/100;rp(ids.tail,td,`translate(${t.x},${t.y}) rotate(${t.rot}) scale(${sc})`,40);if(t.symmetric)rp(ids.tail,td,`translate(${-t.x},${t.y}) rotate(${-t.rot}) scale(${-sc},${sc})`,40);}
+  const fd=FRAMES.find(p=>p.id===ST.frame.id);if(fd&&fd.content)rp(ids.frame,fd,`scale(${ST.frame.scale/100})`,120);
+  const ed=EYES.find(p=>p.id===ST.eye.id);if(ed&&ed.content){const e=ST.eye;rp(ids.eye,ed,`translate(${e.x},${e.y}) rotate(${e.rot}) scale(${e.scale/100})`,50);}
 }
 
-function render() {
-  const ns='http://www.w3.org/2000/svg';
-  const stage=document.getElementById('stage');
-  ['g-wings','g-tail','g-frame','g-eye'].forEach(id=>document.getElementById(id).innerHTML='');
-  const {wg,tg,fg,eg}=buildSVGContent('stage');
-  document.getElementById('g-wings').appendChild(...(wg.childNodes.length?[...wg.childNodes].map(n=>n.cloneNode(true)):[]));
-  document.getElementById('g-tail').appendChild(...(tg.childNodes.length?[...tg.childNodes].map(n=>n.cloneNode(true)):[]));
-  document.getElementById('g-frame').appendChild(...(fg.childNodes.length?[...fg.childNodes].map(n=>n.cloneNode(true)):[]));
-  document.getElementById('g-eye').appendChild(...(eg.childNodes.length?[...eg.childNodes].map(n=>n.cloneNode(true)):[]));
-}
-
-function render() {
-  const ns='http://www.w3.org/2000/svg';
-  document.getElementById('g-wings').innerHTML='';
-  document.getElementById('g-tail').innerHTML='';
-  document.getElementById('g-frame').innerHTML='';
-  document.getElementById('g-eye').innerHTML='';
-  wingSlots.forEach(slot=>{
-    const def=WINGS.find(p=>p.id===slot.wingId);if(!def||!def.content)return;
-    const sc=slot.scale/100,flip=slot.flip?-1:1,tx=DTX+slot.x,ty=slot.y;
-    rp(document.getElementById('g-wings'),def,`translate(${tx},${ty}) rotate(${slot.rot}) scale(${flip*sc},${sc})`,100);
-    if(slot.symmetric)rp(document.getElementById('g-wings'),def,`translate(${-tx},${ty}) rotate(${-slot.rot}) scale(${-flip*sc},${sc})`,100);
+function render(){
+  renderTo({
+    wings:document.getElementById('g-wings'),
+    tail:document.getElementById('g-tail'),
+    frame:document.getElementById('g-frame'),
+    eye:document.getElementById('g-eye'),
   });
-  const td=TAILS.find(p=>p.id===state.tail.id);
-  if(td&&td.content){const t=state.tail,sc=t.scale/100;rp(document.getElementById('g-tail'),td,`translate(${t.x},${t.y}) rotate(${t.rot}) scale(${sc})`,40);if(t.symmetric)rp(document.getElementById('g-tail'),td,`translate(${-t.x},${t.y}) rotate(${-t.rot}) scale(${-sc},${sc})`,40);}
-  const fd=FRAMES.find(p=>p.id===state.frame.id);if(fd&&fd.content)rp(document.getElementById('g-frame'),fd,`scale(${state.frame.scale/100})`,120);
-  const ed=EYES.find(p=>p.id===state.eye.id);if(ed&&ed.content){const e=state.eye;rp(document.getElementById('g-eye'),ed,`translate(${e.x},${e.y}) rotate(${e.rot}) scale(${e.scale/100})`,50);}
 }
 
-function getSVGData() {
-  const inner=document.getElementById('stage').innerHTML;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-150 -150 300 300">${inner}</svg>`;
+function getSVGInner(){return document.getElementById('stage').innerHTML;}
+
+// ── LOUNGE ──
+function updateLoungeCount(){
+  const el=document.getElementById('lounge-count');
+  el.textContent=loungeItems.length>0?`(${loungeItems.length})`:'';
 }
 
-function getSnapshot() {
-  return {
-    wingSlots: JSON.parse(JSON.stringify(wingSlots)),
-    state: JSON.parse(JSON.stringify(state)),
-    svgData: getSVGData(),
-  };
-}
-
-function openSaveModal() {
+function openSaveModal(){
   document.getElementById('creator-name').value='';
   document.getElementById('save-modal').classList.add('open');
   setTimeout(()=>document.getElementById('creator-name').focus(),100);
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
-async function saveToLounge() {
+function saveToLounge(){
   const name=document.getElementById('creator-name').value.trim();
-  if(!name){document.getElementById('creator-name').focus();return;}
+  if(!name){document.getElementById('creator-name').style.borderColor='var(--red)';return;}
   closeModal('save-modal');
-  const item={id:Date.now(),creator:name,createdAt:new Date().toLocaleDateString('ko-KR'),snapshot:getSnapshot()};
+  const item={
+    id:Date.now(),creator:name,
+    createdAt:new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}),
+    svgInner:getSVGInner(),
+  };
   loungeItems.unshift(item);
-  try {
-    await window.storage.set('lounge-items', JSON.stringify(loungeItems), true);
-  } catch(e){}
+  saveStorage();
   updateLoungeCount();
   renderLounge();
   goPage('lounge');
 }
 
-async function loadLounge() {
-  try {
-    const r=await window.storage.get('lounge-items',true);
-    if(r&&r.value) loungeItems=JSON.parse(r.value);
-  } catch(e){ loungeItems=[]; }
-  updateLoungeCount();
-}
-
-function updateLoungeCount() {
-  const el=document.getElementById('lounge-count');
-  el.textContent=loungeItems.length>0?`(${loungeItems.length})`:'';
-}
-
-function renderLounge() {
+function renderLounge(){
   const grid=document.getElementById('lounge-grid');
   grid.innerHTML='';
   document.getElementById('lounge-sub').textContent=
     loungeItems.length>0?`${loungeItems.length}개의 Lightkeeper가 모여있어요`:'라운지에 저장된 Lightkeeper들을 만나보세요';
   if(loungeItems.length===0){
-    grid.innerHTML='<div class="lounge-empty">아직 저장된 Lightkeeper가 없어요.<br>Builder에서 캐릭터를 만들고 라운지에 저장해보세요!</div>';
+    grid.innerHTML='<div class="lounge-empty">아직 저장된 Lightkeeper가 없어요.<br>Builder에서 캐릭터를 만들고<br>라운지에 저장해보세요!</div>';
     return;
   }
   const ns='http://www.w3.org/2000/svg';
   loungeItems.forEach(item=>{
-    const card=document.createElement('div'); card.className='lounge-card';
-    const canvasDiv=document.createElement('div'); canvasDiv.className='lounge-card-canvas';
-    const svg=document.createElementNS(ns,'svg'); svg.setAttribute('width','100'); svg.setAttribute('height','100'); svg.setAttribute('viewBox','-150 -150 300 300'); svg.style.overflow='visible';
-    svg.innerHTML=item.snapshot.svgData.replace(/<\/?svg[^>]*>/g,'');
-    canvasDiv.appendChild(svg);
-    const info=document.createElement('div'); info.className='lounge-card-info';
-    info.innerHTML=`<div class="lounge-card-name">${item.creator}의 Lightkeeper</div><div class="lounge-card-meta">${item.createdAt}</div>`;
-    const footer=document.createElement('div'); footer.className='lounge-card-footer';
-    const del=document.createElement('button'); del.className='del-btn'; del.textContent='삭제';
+    const card=document.createElement('div');card.className='lounge-card';
+    const cv=document.createElement('div');cv.className='lounge-card-cv';
+    const svg=document.createElementNS(ns,'svg');svg.setAttribute('width','110');svg.setAttribute('height','110');svg.setAttribute('viewBox','-170 -170 340 340');svg.style.overflow='visible';
+    svg.innerHTML=item.svgInner;
+    cv.appendChild(svg);
+    cv.onclick=()=>openViewModal(item);
+    const info=document.createElement('div');info.className='lounge-card-info';
+    info.innerHTML=`<div class="lounge-card-name">${item.creator}의 Lightkeeper</div><div class="lounge-card-date">${item.createdAt}</div>`;
+    const foot=document.createElement('div');foot.className='lounge-card-foot';
+    const del=document.createElement('button');del.className='del-btn';del.textContent='삭제';
     del.onclick=e=>{e.stopPropagation();deleteItem(item.id);};
-    footer.appendChild(del);
-    canvasDiv.onclick=()=>openViewModal(item);
-    card.appendChild(canvasDiv); card.appendChild(info); card.appendChild(footer);
+    foot.appendChild(del);
+    card.appendChild(cv);card.appendChild(info);card.appendChild(foot);
     grid.appendChild(card);
   });
 }
 
-async function deleteItem(id) {
+function deleteItem(id){
+  if(!confirm('이 Lightkeeper를 삭제할까요?'))return;
   loungeItems=loungeItems.filter(i=>i.id!==id);
-  try{await window.storage.set('lounge-items',JSON.stringify(loungeItems),true);}catch(e){}
-  updateLoungeCount(); renderLounge();
+  saveStorage();updateLoungeCount();renderLounge();
 }
 
-function openViewModal(item) {
-  const svg=document.getElementById('view-stage');
-  svg.innerHTML=item.snapshot.svgData.replace(/<\/?svg[^>]*>/g,'');
+function openViewModal(item){
+  viewingItem=item;
+  document.getElementById('view-stage').innerHTML=item.svgInner;
   document.getElementById('view-name').textContent=`${item.creator}의 Lightkeeper`;
-  document.getElementById('view-meta').textContent=item.createdAt;
+  document.getElementById('view-date').textContent=item.createdAt;
   document.getElementById('view-modal').classList.add('open');
 }
 
-function randomize() {
-  state.frame.id=FRAMES[1+Math.floor(Math.random()*(FRAMES.length-1))].id;
-  state.eye.id=EYES[1+Math.floor(Math.random()*(EYES.length-1))].id;
-  state.tail.id='none';
+function exportFromView(){
+  if(!viewingItem)return;
+  const blob=new Blob([`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-170 -170 340 340">${viewingItem.svgInner}</svg>`],{type:'image/svg+xml'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`lightkeeper-${viewingItem.creator}.svg`;a.click();
+}
+
+function randomize(){
+  ST.frame.id=FRAMES[1+Math.floor(Math.random()*(FRAMES.length-1))].id;
+  ST.eye.id=EYES[1+Math.floor(Math.random()*(EYES.length-1))].id;
+  ST.tail.id='none';
   wingSlots=[{id:0,wingId:WINGS[1+Math.floor(Math.random()*(WINGS.length-1))].id,x:Math.floor(Math.random()*15),y:-(Math.floor(Math.random()*20)+10),scale:DWS,rot:0,flip:0,symmetric:false,open:true}];
   nextSlotId=1;
-  buildGrid('frame-grid',FRAMES,'frame'); buildGrid('eye-grid',EYES,'eye'); buildGrid('tail-grid',TAILS,'tail');
-  buildWingSlots(); renderAdjustWings();
+  buildGrid('frame-grid',FRAMES,'frame');buildGrid('eye-grid',EYES,'eye');buildGrid('tail-grid',TAILS,'tail');
+  buildWingSlots();renderAdjustWings();
   document.getElementById('tail-sym-row').style.display='none';
   const a=document.getElementById('adjust-tail-area');if(a)a.style.display='none';
   render();
 }
 
-document.getElementById('save-modal').addEventListener('click',function(e){if(e.target===this)closeModal('save-modal');});
-document.getElementById('view-modal').addEventListener('click',function(e){if(e.target===this)closeModal('view-modal');});
+// modal backdrop click
+['save-modal','view-modal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeModal(id);});
+});
 
-(async()=>{
-  await loadLounge();
-  buildGrid('frame-grid',FRAMES,'frame'); buildGrid('eye-grid',EYES,'eye'); buildGrid('tail-grid',TAILS,'tail');
-  buildWingSlots(); render();
-})();
+// ── INIT ──
+loadStorage();
+updateLoungeCount();
+buildGrid('frame-grid',FRAMES,'frame');
+buildGrid('eye-grid',EYES,'eye');
+buildGrid('tail-grid',TAILS,'tail');
+buildWingSlots();
+render();
 </script>
+</body>
+</html>
