@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>LightKeeper</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -20,111 +20,62 @@
   --accent:#1c1a17;
   --white:#ffffff;
   --red:#b03020;
-  --sidebar:288px;
+  --sidebar:280px;
   --nav:52px;
 }
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
 
-/* ── NAV ── */
-.nav{
-  height:var(--nav);flex-shrink:0;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px;
-  border-bottom:1px solid var(--border);
-  background:var(--bg);
-  position:relative;z-index:20;
-}
-.nav-brand{
-  font-size:14px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
-  display:flex;align-items:baseline;gap:8px;
-}
+/* NAV */
+.nav{height:var(--nav);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);background:var(--bg);position:relative;z-index:20;}
+.nav-brand{font-size:14px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:baseline;gap:8px;}
 .nav-brand-sub{font-family:'DM Mono',monospace;font-size:10px;font-weight:400;color:var(--text3);letter-spacing:0.06em;text-transform:none;}
 .nav-center{display:flex;gap:2px;}
-.nav-tab{
-  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.06em;
-  padding:6px 16px;border-radius:20px;border:1px solid transparent;
-  background:transparent;cursor:pointer;color:var(--text2);transition:all 0.15s;
-}
+.nav-tab{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.06em;padding:6px 16px;border-radius:20px;border:1px solid transparent;background:transparent;cursor:pointer;color:var(--text2);transition:all 0.15s;}
 .nav-tab:hover{color:var(--text);background:var(--bg2);}
 .nav-tab.active{color:var(--text);background:var(--bg2);border-color:var(--border2);}
-.nav-tab .count{font-size:10px;opacity:0.5;margin-left:3px;}
 .nav-right{display:flex;gap:8px;}
-.btn{
-  font-family:'Syne',sans-serif;font-size:12px;font-weight:600;
-  padding:7px 16px;border-radius:6px;
-  border:1px solid var(--border2);background:var(--bg2);
-  color:var(--text);cursor:pointer;transition:all 0.15s;letter-spacing:0.02em;
-}
-.btn:hover{background:var(--bg3);border-color:var(--border2);}
+.btn{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:7px 16px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;transition:all 0.15s;}
+.btn:hover{background:var(--bg3);}
 .btn-primary{background:var(--accent);color:var(--white);border-color:var(--accent);}
 .btn-primary:hover{opacity:0.82;background:var(--accent);}
 
-/* ── PAGES ── */
+/* PAGES */
 .page{display:none;flex:1;overflow:hidden;}
 .page.active{display:flex;}
 
-/* ─────────────────────────────────────────
-   BUILDER
-───────────────────────────────────────── */
+/* BUILDER */
 .builder{display:flex;width:100%;height:100%;}
-
-/* sidebar */
-.sidebar{
-  width:var(--sidebar);flex-shrink:0;
-  border-right:1px solid var(--border);
-  background:var(--bg2);
-  overflow-y:auto;display:flex;flex-direction:column;
-}
+.sidebar{width:var(--sidebar);flex-shrink:0;border-right:1px solid var(--border);background:var(--bg2);overflow-y:auto;display:flex;flex-direction:column;}
 .sidebar::-webkit-scrollbar{width:3px;}
 .sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 .tab-row{display:flex;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:5;}
-.stab{
-  flex:1;padding:10px 6px;
-  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--text3);border:none;background:transparent;cursor:pointer;
-  border-bottom:1.5px solid transparent;margin-bottom:-1px;transition:color 0.15s;
-}
+.stab{flex:1;padding:10px 6px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);border:none;background:transparent;cursor:pointer;border-bottom:1.5px solid transparent;margin-bottom:-1px;transition:color 0.15s;}
 .stab:hover{color:var(--text);}
 .stab.active{color:var(--text);border-bottom-color:var(--accent);}
 .ctrl-section{display:none;}
 .ctrl-section.active{display:block;}
-
 .category{padding:12px 14px;border-bottom:1px solid var(--border);}
 .cat-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--text3);text-transform:uppercase;margin-bottom:9px;}
 .parts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
 .slot-parts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:9px;}
-.part-btn{
-  aspect-ratio:1;border-radius:6px;border:1px solid var(--border);
-  background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;
-  padding:5px;overflow:hidden;transition:all 0.12s;
-}
+.part-btn{aspect-ratio:1;border-radius:6px;border:1px solid var(--border);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:5px;overflow:hidden;transition:all 0.12s;}
 .part-btn:hover{border-color:var(--border2);}
 .part-btn.selected{border:2px solid var(--accent);}
 .part-btn svg{width:100%;height:100%;}
-.part-btn .nl{font-family:'DM Mono',monospace;font-size:8px;color:var(--text3);}
-
 .ctrl-group{padding:11px 14px;border-bottom:1px solid var(--border);}
-.ctrl-group:last-child{border-bottom:none;}
 .ctrl-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .ctrl-row:last-child{margin-bottom:0;}
-.ctrl-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.04em;color:var(--text2);width:26px;flex-shrink:0;}
-.ctrl-row input[type=range]{flex:1;accent-color:var(--accent);cursor:pointer;height:3px;}
+.ctrl-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--text2);width:26px;flex-shrink:0;}
+.ctrl-row input[type=range]{flex:1;accent-color:var(--accent);cursor:pointer;}
 .ctrl-val{font-family:'DM Mono',monospace;font-size:9px;color:var(--text);min-width:34px;text-align:right;}
-
 .btn-group{display:flex;gap:4px;flex:1;}
-.tog-btn{
-  flex:1;padding:4px 5px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.04em;
-  border:1px solid var(--border2);border-radius:4px;background:var(--bg);
-  cursor:pointer;color:var(--text2);transition:all 0.12s;
-}
+.tog-btn{flex:1;padding:4px 5px;font-family:'DM Mono',monospace;font-size:9px;border:1px solid var(--border2);border-radius:4px;background:var(--bg);cursor:pointer;color:var(--text2);transition:all 0.12s;}
 .tog-btn:hover{color:var(--text);}
 .tog-btn.active{background:var(--accent);color:var(--white);border-color:var(--accent);}
-
 .wing-slot{border-bottom:1px solid var(--border);}
-.wing-slot:last-child{border-bottom:none;}
 .wing-slot-hdr{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;cursor:pointer;user-select:none;}
-.wing-slot-hdr:hover{background:rgba(0,0,0,0.025);}
+.wing-slot-hdr:hover{background:rgba(0,0,0,0.02);}
 .wing-slot-ttl{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;color:var(--text);letter-spacing:0.1em;text-transform:uppercase;}
 .wing-slot-acts{display:flex;gap:4px;}
 .slot-btn{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border:1px solid var(--border);border-radius:3px;background:transparent;cursor:pointer;color:var(--text2);transition:all 0.12s;}
@@ -132,110 +83,40 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 .slot-btn.rm:hover{color:var(--red);border-color:var(--red);}
 .wing-slot-body{padding:0 14px 10px;display:none;}
 .wing-slot-body.open{display:block;}
-.add-wing-btn{
-  display:block;margin:8px 14px;padding:8px;
-  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;
-  border:1px dashed var(--border2);border-radius:5px;background:transparent;
-  cursor:pointer;color:var(--text3);width:calc(100% - 28px);transition:all 0.15s;
-}
+.add-wing-btn{display:block;margin:8px 14px;padding:8px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;border:1px dashed var(--border2);border-radius:5px;background:transparent;cursor:pointer;color:var(--text3);width:calc(100% - 28px);transition:all 0.15s;}
 .add-wing-btn:hover:not(:disabled){color:var(--text);border-color:var(--accent);}
 .add-wing-btn:disabled{opacity:0.3;cursor:not-allowed;}
-.sidebar-tip{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);padding:12px 14px;line-height:1.7;}
-
-/* canvas */
 .canvas-area{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.canvas-area::before{
-  content:'';position:absolute;inset:0;
-  background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);
-  background-size:24px 24px;opacity:0.6;pointer-events:none;
-}
+.canvas-area::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:24px 24px;opacity:0.6;pointer-events:none;}
 #stage{overflow:visible;position:relative;z-index:1;}
 
-/* ─────────────────────────────────────────
-   LOUNGE
-───────────────────────────────────────── */
-.lounge-page{flex-direction:column;width:100%;height:100%;}
-.lounge-hdr{
-  flex-shrink:0;padding:20px 28px 18px;border-bottom:1px solid var(--border);
-  display:flex;align-items:flex-end;justify-content:space-between;
-}
-.lounge-title{font-size:22px;font-weight:700;letter-spacing:0.04em;margin-bottom:3px;}
-.lounge-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.05em;}
-.lounge-body{flex:1;overflow-y:auto;padding:24px 28px;}
-.lounge-body::-webkit-scrollbar{width:4px;}
-.lounge-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-.lounge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-.lounge-empty{
-  grid-column:1/-1;text-align:center;padding:80px 20px;
-  color:var(--text3);font-family:'DM Mono',monospace;font-size:11px;line-height:2.2;
-}
-.lounge-card{
-  border:1px solid var(--border);border-radius:10px;
-  background:var(--bg2);overflow:hidden;cursor:pointer;
-  transition:all 0.18s;display:flex;flex-direction:column;
-}
-.lounge-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.08);}
-.lounge-card-cv{
-  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-  background:var(--bg);border-bottom:1px solid var(--border);padding:8px;position:relative;
-}
-.lounge-card-cv svg{overflow:visible;}
-.lounge-card-info{padding:10px 12px 4px;}
-.lounge-card-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.lounge-card-date{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);}
-.lounge-card-foot{display:flex;justify-content:flex-end;padding:6px 12px 10px;}
-.del-btn{
-  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.04em;
-  padding:2px 8px;border:1px solid transparent;border-radius:3px;
-  background:transparent;cursor:pointer;color:var(--text3);transition:all 0.12s;
-}
-.del-btn:hover{color:var(--red);border-color:var(--red);}
+/* LOUNGE */
+.lounge-page{position:relative;width:100%;flex:1;overflow:hidden;background:var(--bg);}
+.lounge-page::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:28px 28px;opacity:0.5;pointer-events:none;}
+#lounge-canvas{position:absolute;inset:0;width:100%;height:100%;}
+.lounge-empty-msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);line-height:2.2;pointer-events:none;}
 
-/* ── MODALS ── */
-.modal-bg{
-  display:none;position:fixed;inset:0;
-  background:rgba(28,26,23,0.4);backdrop-filter:blur(4px);
-  z-index:100;align-items:center;justify-content:center;
-}
+/* MODALS */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(28,26,23,0.4);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;}
 .modal-bg.open{display:flex;}
-.modal{
-  background:var(--bg);border:1px solid var(--border);border-radius:12px;
-  padding:28px;display:flex;flex-direction:column;gap:18px;
-  box-shadow:0 24px 64px rgba(0,0,0,0.15);
-}
-.modal-title{font-size:15px;font-weight:700;letter-spacing:0.02em;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:28px;display:flex;flex-direction:column;gap:18px;width:320px;box-shadow:0 24px 64px rgba(0,0,0,0.15);}
+.modal-title{font-size:15px;font-weight:700;}
 .modal-desc{font-family:'DM Mono',monospace;font-size:10px;color:var(--text2);line-height:1.7;}
-.modal input[type=text]{
-  width:100%;padding:10px 12px;
-  border:1px solid var(--border2);border-radius:6px;
-  background:var(--bg2);color:var(--text);
-  font-family:'Syne',sans-serif;font-size:14px;font-weight:500;
-  outline:none;transition:border-color 0.15s;
-}
-.modal input[type=text]:focus{border-color:var(--accent);}
+.modal input{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg2);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;font-weight:500;outline:none;transition:border-color 0.15s;}
+.modal input:focus{border-color:var(--accent);}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;}
-
-.view-modal{
-  background:var(--bg);border:1px solid var(--border);border-radius:12px;
-  padding:36px;display:flex;flex-direction:column;align-items:center;gap:20px;
-  box-shadow:0 24px 64px rgba(0,0,0,0.15);min-width:300px;
-}
+.view-modal{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:36px;display:flex;flex-direction:column;align-items:center;gap:20px;box-shadow:0 24px 64px rgba(0,0,0,0.15);}
 .view-modal-name{font-size:16px;font-weight:700;}
 .view-modal-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <div class="nav">
-  <div class="nav-brand">
-    LightKeeper
-    <span class="nav-brand-sub">Character Builder</span>
-  </div>
+  <div class="nav-brand">LightKeeper<span class="nav-brand-sub">Character Builder</span></div>
   <div class="nav-center">
     <button class="nav-tab active" onclick="goPage('builder')">Builder</button>
-    <button class="nav-tab" id="tab-lounge" onclick="goPage('lounge')">Lounge <span class="count" id="lounge-count"></span></button>
+    <button class="nav-tab" onclick="goPage('lounge')">Lounge <span id="lounge-count" style="font-size:10px;opacity:0.5;"></span></button>
   </div>
   <div class="nav-right">
     <button class="btn" onclick="randomize()">랜덤</button>
@@ -243,7 +124,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
   </div>
 </div>
 
-<!-- BUILDER PAGE -->
+<!-- BUILDER -->
 <div class="page active" id="page-builder">
 <div class="builder">
   <div class="sidebar">
@@ -251,132 +132,79 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
       <button class="stab active" onclick="switchTab('parts')">파츠 선택</button>
       <button class="stab" onclick="switchTab('adjust')">위치 조정</button>
     </div>
-
-    <!-- 파츠 탭 -->
     <div id="tab-parts" class="ctrl-section active">
-      <div class="category">
-        <div class="cat-label">Frame</div>
-        <div class="parts-grid" id="frame-grid"></div>
-      </div>
-      <div class="category">
-        <div class="cat-label">Eye</div>
-        <div class="parts-grid" id="eye-grid"></div>
-      </div>
-      <div class="category" style="padding-bottom:0;">
-        <div class="cat-label" style="padding:0 0 9px;">Wing</div>
-        <div id="wing-slots"></div>
-        <button class="add-wing-btn" id="add-wing-btn" onclick="addWingSlot()">+ 날개 추가</button>
-      </div>
+      <div class="category"><div class="cat-label">Frame</div><div class="parts-grid" id="frame-grid"></div></div>
+      <div class="category"><div class="cat-label">Eye</div><div class="parts-grid" id="eye-grid"></div></div>
+      <div class="category" style="padding-bottom:0;"><div class="cat-label" style="padding:0 0 9px;">Wing</div><div id="wing-slots"></div><button class="add-wing-btn" id="add-wing-btn" onclick="addWingSlot()">+ 날개 추가</button></div>
       <div class="category">
         <div class="cat-label">Tail</div>
         <div class="parts-grid" id="tail-grid"></div>
         <div id="tail-sym-row" style="margin-top:9px;display:none;">
-          <div class="ctrl-row">
-            <span class="ctrl-lbl">배치</span>
-            <div class="btn-group">
-              <button class="tog-btn active" id="tail-sym-off" onclick="setTailSym(false)">한쪽</button>
-              <button class="tog-btn" id="tail-sym-on" onclick="setTailSym(true)">대칭</button>
-            </div>
-          </div>
+          <div class="ctrl-row"><span class="ctrl-lbl">배치</span><div class="btn-group"><button class="tog-btn active" id="tail-sym-off" onclick="setTailSym(false)">한쪽</button><button class="tog-btn" id="tail-sym-on" onclick="setTailSym(true)">대칭</button></div></div>
         </div>
       </div>
     </div>
-
-    <!-- 조정 탭 -->
     <div id="tab-adjust" class="ctrl-section">
-      <div class="ctrl-group">
-        <div class="cat-label" style="margin-bottom:8px;">Frame</div>
-        <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="60" max="140" value="100" step="1" oninput="uc('frame','scale',this.value)"/><span class="ctrl-val" id="frame-scale-val">100%</span></div>
-      </div>
-      <div class="ctrl-group">
-        <div class="cat-label" style="margin-bottom:8px;">Eye</div>
+      <div class="ctrl-group"><div class="cat-label" style="margin-bottom:8px;">Frame</div><div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="60" max="140" value="100" step="1" oninput="uc('frame','scale',this.value)"/><span class="ctrl-val" id="frame-scale-val">100%</span></div></div>
+      <div class="ctrl-group"><div class="cat-label" style="margin-bottom:8px;">Eye</div>
         <div class="ctrl-row"><span class="ctrl-lbl">X</span><input type="range" min="-50" max="50" value="0" step="1" oninput="uc('eye','x',this.value)"/><span class="ctrl-val" id="eye-x-val">0</span></div>
         <div class="ctrl-row"><span class="ctrl-lbl">Y</span><input type="range" min="-50" max="50" value="0" step="1" oninput="uc('eye','y',this.value)"/><span class="ctrl-val" id="eye-y-val">0</span></div>
         <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="30" max="160" value="100" step="1" oninput="uc('eye','scale',this.value)"/><span class="ctrl-val" id="eye-scale-val">100%</span></div>
         <div class="ctrl-row"><span class="ctrl-lbl">회전</span><input type="range" min="-180" max="180" value="0" step="1" oninput="uc('eye','rot',this.value)"/><span class="ctrl-val" id="eye-rot-val">0°</span></div>
       </div>
       <div id="adjust-wings-area"></div>
-      <div class="ctrl-group" id="adjust-tail-area" style="display:none;">
-        <div class="cat-label" style="margin-bottom:8px;">Tail</div>
+      <div class="ctrl-group" id="adjust-tail-area" style="display:none;"><div class="cat-label" style="margin-bottom:8px;">Tail</div>
         <div class="ctrl-row"><span class="ctrl-lbl">X</span><input type="range" min="-80" max="80" value="0" step="1" oninput="utc('x',this.value)"/><span class="ctrl-val" id="tail-x-val">0</span></div>
         <div class="ctrl-row"><span class="ctrl-lbl">Y</span><input type="range" min="-20" max="120" value="55" step="1" oninput="utc('y',this.value)"/><span class="ctrl-val" id="tail-y-val">55</span></div>
         <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="30" max="300" value="100" step="1" oninput="utc('scale',this.value)"/><span class="ctrl-val" id="tail-scale-val">100%</span></div>
         <div class="ctrl-row"><span class="ctrl-lbl">회전</span><input type="range" min="-180" max="180" value="0" step="1" oninput="utc('rot',this.value)"/><span class="ctrl-val" id="tail-rot-val">0°</span></div>
       </div>
-      <p class="sidebar-tip">슬라이더로 각 파츠의<br>위치·크기·회전을 조절하세요.</p>
     </div>
   </div>
-
   <div class="canvas-area">
-    <svg id="stage" width="340" height="340" viewBox="-170 -170 340 340">
-      <g id="g-wings"></g>
-      <g id="g-tail"></g>
-      <g id="g-frame"></g>
-      <g id="g-eye"></g>
+    <svg id="stage" width="360" height="360" viewBox="-180 -180 360 360">
+      <g id="g-wings"></g><g id="g-tail"></g><g id="g-frame"></g><g id="g-eye"></g>
     </svg>
   </div>
 </div>
 </div>
 
-<!-- LOUNGE PAGE -->
+<!-- LOUNGE -->
 <div class="page" id="page-lounge">
-<div class="lounge-page">
-  <div class="lounge-hdr">
-    <div>
-      <div class="lounge-title">Lightkeeper Lounge</div>
-      <div class="lounge-sub" id="lounge-sub">라운지에 저장된 Lightkeeper들을 만나보세요</div>
-    </div>
+  <div class="lounge-page">
+    <canvas id="lounge-canvas"></canvas>
+    <div class="lounge-empty-msg" id="lounge-empty">아직 저장된 Lightkeeper가 없어요.<br>Builder에서 캐릭터를 만들고 라운지에 저장해보세요!</div>
   </div>
-  <div class="lounge-body">
-    <div class="lounge-grid" id="lounge-grid"></div>
-  </div>
-</div>
 </div>
 
 <!-- SAVE MODAL -->
 <div class="modal-bg" id="save-modal">
-  <div class="modal" style="width:320px;">
-    <div>
-      <div class="modal-title">라운지에 저장하기</div>
-      <div class="modal-desc" style="margin-top:6px;">만든 사람의 이름을 입력하면<br>라운지에 저장됩니다.</div>
-    </div>
-    <input type="text" id="creator-name" placeholder="이름을 입력하세요" maxlength="20"
-      onkeydown="if(event.key==='Enter')saveToLounge()"/>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModal('save-modal')">취소</button>
-      <button class="btn btn-primary" onclick="saveToLounge()">저장하기</button>
-    </div>
+  <div class="modal">
+    <div><div class="modal-title">라운지에 저장하기</div><div class="modal-desc" style="margin-top:6px;">이름을 입력하면 라운지에서 날아다녀요.</div></div>
+    <input type="text" id="creator-name" placeholder="이름을 입력하세요" maxlength="20" onkeydown="if(event.key==='Enter')saveToLounge()"/>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('save-modal')">취소</button><button class="btn btn-primary" onclick="saveToLounge()">저장하기</button></div>
   </div>
 </div>
 
 <!-- VIEW MODAL -->
 <div class="modal-bg" id="view-modal">
   <div class="view-modal">
-    <svg id="view-stage" width="240" height="240" viewBox="-150 -150 300 300" style="overflow:visible;"></svg>
-    <div style="text-align:center;">
-      <div class="view-modal-name" id="view-name"></div>
-      <div class="view-modal-date" id="view-date"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModal('view-modal')">닫기</button>
-      <button class="btn btn-primary" onclick="exportFromView()">SVG 저장</button>
-    </div>
+    <svg id="view-stage" width="240" height="240" viewBox="-180 -180 360 360" style="overflow:visible;"></svg>
+    <div style="text-align:center;"><div class="view-modal-name" id="view-name"></div><div class="view-modal-date" id="view-date"></div></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('view-modal')">닫기</button><button class="btn btn-primary" onclick="exportFromView()">SVG 저장</button></div>
   </div>
 </div>
 
 <script>
-// ── helpers ──
 function nc(h){
   return h
-    .replace(/fill="#([0-9a-fA-F]{3,6})"/g,(m,c)=>/^(fff|ffffff|FFF|FFFFFF)$/.test(c)?m:'fill="currentColor"')
-    .replace(/stroke="#([0-9a-fA-F]{3,6})"/g,(m,c)=>/^(fff|ffffff|FFF|FFFFFF)$/.test(c)?m:'stroke="currentColor"')
+    .replace(/fill="#([0-9a-fA-F]{3,6})"/g,(m,c)=>/^(fff|ffffff)$/i.test(c)?m:'fill="currentColor"')
+    .replace(/stroke="#([0-9a-fA-F]{3,6})"/g,(m,c)=>/^(fff|ffffff)$/i.test(c)?m:'stroke="currentColor"')
     .replace(/fill="black"/g,'fill="currentColor"')
     .replace(/stroke="black"/g,'stroke="currentColor"');
 }
 function vbt(vb,sz){const[x,y,w,h]=vb,sc=sz/Math.max(w,h);return `translate(${-(x+w/2)*sc},${-(y+h/2)*sc}) scale(${sc})`;}
-function mkG(ns){return document.createElementNS(ns,'g');}
 
-// ── DATA ──
 const FRAMES=[
   {id:'none',label:'없음',vb:null,content:null},
   {id:'frame_01',label:'F01',vb:[0,0,119.31,119.31],content:`<path d="M98,14c4.03,0,7.31,3.28,7.31,7.31v76.69c0,4.03-3.28,7.31-7.31,7.31H21.31c-4.03,0-7.31-3.28-7.31-7.31V21.31c0-4.03,3.28-7.31,7.31-7.31h76.69M98,0H21.31C9.54,0,0,9.54,0,21.31v76.69c0,11.77,9.54,21.31,21.31,21.31h76.69c11.77,0,21.31-9.54,21.31-21.31V21.31c0-11.77-9.54-21.31-21.31-21.31h0Z" fill="currentColor"/>`},
@@ -426,23 +254,143 @@ let wingSlots=[{id:0,wingId:'wing_07',x:0,y:0,scale:DWS,rot:0,flip:0,symmetric:f
 let nextSlotId=1;
 const ST={frame:{id:'frame_02',scale:100},eye:{id:'eye_02',x:0,y:0,scale:100,rot:0},tail:{id:'none',x:0,y:55,scale:100,rot:0,symmetric:false}};
 let loungeItems=[];
+let loungeRAF=null;
+let loungeAgents=[];
 let viewingItem=null;
 
-// ── STORAGE (localStorage fallback) ──
-const STORAGE_KEY='lk-lounge-v1';
-function saveStorage(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(loungeItems));}catch(e){}}
-function loadStorage(){try{const d=localStorage.getItem(STORAGE_KEY);if(d)loungeItems=JSON.parse(d);}catch(e){loungeItems=[];}}
+function rp(pg,def,tr,sz){
+  if(!def||!def.content)return;
+  const ns='http://www.w3.org/2000/svg';
+  const o=document.createElementNS(ns,'g');o.setAttribute('transform',tr);
+  const i=document.createElementNS(ns,'g');i.setAttribute('transform',vbt(def.vb,sz));
+  i.innerHTML=nc(def.content);o.appendChild(i);pg.appendChild(o);
+}
 
-// ── NAV ──
+// 날개 펄럭 SVG 생성: g-wings에만 scaleY 적용
+function makeFlapSVG(svgInner,flapT){
+  const sy=(1.0-flapT*0.88).toFixed(4);
+  return svgInner.replace(
+    /(<g id="g-wings">)([\s\S]*?)(<\/g>)/,
+    (_,open,inner)=>`<g id="g-wings"><g transform="scale(1,${sy})">${inner}</g></g>`
+  );
+}
+
+const FRAME_COUNT=16;
+const BAKE_SIZE=280;
+
+function prebakeAgent(agent){
+  const imgs=new Array(FRAME_COUNT).fill(null);
+  let loaded=0;
+  for(let fi=0;fi<FRAME_COUNT;fi++){
+    const t=(1-Math.cos(fi/FRAME_COUNT*Math.PI*2))/2;
+    const inner=makeFlapSVG(agent.item.svgInner,t);
+    const svgStr=`<svg xmlns="http://www.w3.org/2000/svg" width="${BAKE_SIZE}" height="${BAKE_SIZE}" viewBox="-200 -200 400 400">${inner}</svg>`;
+    const blob=new Blob([svgStr],{type:'image/svg+xml'});
+    const url=URL.createObjectURL(blob);
+    const img=new Image();
+    const idx=fi;
+    img.onload=()=>{URL.revokeObjectURL(url);imgs[idx]=img;if(++loaded===FRAME_COUNT){agent.frames=imgs;agent.ready=true;}};
+    img.onerror=()=>{URL.revokeObjectURL(url);if(++loaded===FRAME_COUNT){agent.frames=imgs;agent.ready=true;}};
+    img.src=url;
+  }
+}
+
+function createAgent(item,cw,ch){
+  const sz=150;
+  const spd=0.32+Math.random()*0.42;
+  const ang=Math.random()*Math.PI*2;
+  return {
+    item,sz,
+    x:sz+Math.random()*(cw-sz*2),
+    y:sz+Math.random()*(ch-sz*2),
+    angle:ang,speed:spd,
+    turnRate:(Math.random()-0.5)*0.007,
+    wobble:Math.random()*Math.PI*2,
+    floatFreq:0.0005+Math.random()*0.0004,
+    floatAmp:6+Math.random()*7,
+    floatPhase:Math.random()*Math.PI*2,
+    flapFreq:0.003+Math.random()*0.0018,
+    flapPhase:Math.random()*Math.PI*2,
+    frames:[],ready:false,
+  };
+}
+
+function startLounge(){
+  const canvas=document.getElementById('lounge-canvas');
+  const emptyMsg=document.getElementById('lounge-empty');
+  if(!canvas)return;
+  const parent=canvas.parentElement;
+  const cw=parent.clientWidth||800;
+  const ch=parent.clientHeight||520;
+  canvas.width=cw;canvas.height=ch;
+  if(loungeItems.length===0){emptyMsg.style.display='block';stopLounge();return;}
+  emptyMsg.style.display='none';
+  loungeAgents=loungeItems.map(item=>createAgent(item,cw,ch));
+  loungeAgents.forEach(a=>prebakeAgent(a));
+  const cs=getComputedStyle(document.body);
+  const fg=cs.color||'#1c1a17';
+  const bg=cs.backgroundColor||'#f5f3ef';
+  const ctx=canvas.getContext('2d');
+  function loop(ts){
+    ctx.clearRect(0,0,cw,ch);
+    loungeAgents.forEach(a=>{
+      const fy=Math.sin(ts*a.floatFreq+a.floatPhase)*a.floatAmp;
+      a.angle+=a.turnRate+Math.sin(ts*0.00022+a.wobble)*0.003;
+      a.x+=Math.cos(a.angle)*a.speed;
+      a.y+=Math.sin(a.angle)*a.speed;
+      const M=a.sz*0.9;
+      if(a.x<-M)a.x=cw+M;if(a.x>cw+M)a.x=-M;
+      if(a.y<-M)a.y=ch+M;if(a.y>ch+M)a.y=-M;
+      ctx.save();ctx.translate(a.x,a.y+fy);
+      if(a.ready&&a.frames.length){
+        const phase=(Math.sin(ts*a.flapFreq+a.flapPhase)+1)/2;
+        const fi=Math.floor(phase*FRAME_COUNT)%FRAME_COUNT;
+        const img=a.frames[fi];
+        if(img){
+          const sc=a.sz/BAKE_SIZE;
+          ctx.drawImage(img,-BAKE_SIZE*sc/2,-BAKE_SIZE*sc/2,BAKE_SIZE*sc,BAKE_SIZE*sc);
+        }
+      }else{
+        ctx.beginPath();ctx.arc(0,0,28,0,Math.PI*2);
+        ctx.fillStyle=fg+'22';ctx.fill();
+      }
+      const name=a.item.creator;
+      ctx.font=`600 11px 'Syne',sans-serif`;
+      const tw=ctx.measureText(name).width;
+      const pH=20,pPx=10,pW=tw+pPx*2;
+      const pX=-pW/2,pY=a.sz*0.44;
+      ctx.beginPath();ctx.roundRect(pX,pY,pW,pH,pH/2);
+      ctx.fillStyle=fg;ctx.fill();
+      ctx.fillStyle=bg;ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(name,0,pY+pH/2);
+      ctx.restore();
+    });
+    loungeRAF=requestAnimationFrame(loop);
+  }
+  stopLounge();
+  loungeRAF=requestAnimationFrame(loop);
+  canvas.onclick=(e)=>{
+    const rect=canvas.getBoundingClientRect();
+    const mx=e.clientX-rect.left,my=e.clientY-rect.top;
+    for(const a of loungeAgents){
+      if(Math.abs(mx-a.x)<a.sz/2&&Math.abs(my-a.y)<a.sz/2){openViewModal(a.item);break;}
+    }
+  };
+}
+
+function stopLounge(){
+  if(loungeRAF){cancelAnimationFrame(loungeRAF);loungeRAF=null;}
+  const c=document.getElementById('lounge-canvas');if(c)c.onclick=null;
+}
+
 function goPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelector(`.nav-tab[onclick*="${p}"]`).classList.add('active');
-  if(p==='lounge')renderLounge();
+  document.querySelectorAll('.nav-tab')[p==='builder'?0:1].classList.add('active');
+  if(p==='lounge')startLounge();else stopLounge();
 }
 
-// ── BUILDER TABS ──
 function switchTab(t){
   document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('active',b.textContent.includes(t==='parts'?'파츠':'위치')));
   document.querySelectorAll('.ctrl-section').forEach(s=>s.classList.remove('active'));
@@ -450,7 +398,6 @@ function switchTab(t){
   if(t==='adjust')renderAdjustWings();
 }
 
-// ── GRIDS ──
 function buildGrid(gId,parts,cat){
   const grid=document.getElementById(gId);if(!grid)return;
   grid.innerHTML='';
@@ -458,7 +405,7 @@ function buildGrid(gId,parts,cat){
   parts.forEach(p=>{
     const btn=document.createElement('button');
     btn.className='part-btn'+(ST[cat]&&ST[cat].id===p.id?' selected':'');
-    if(!p.content){btn.innerHTML='<span class="nl">없음</span>';}
+    if(!p.content){btn.innerHTML='<span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--text3)">없음</span>';}
     else{const s=document.createElementNS(ns,'svg');s.setAttribute('viewBox',`${p.vb[0]} ${p.vb[1]} ${p.vb[2]} ${p.vb[3]}`);s.innerHTML=nc(p.content);btn.appendChild(s);}
     btn.onclick=()=>{
       ST[cat].id=p.id;buildGrid(gId,parts,cat);
@@ -471,7 +418,6 @@ function buildGrid(gId,parts,cat){
 
 function setTailSym(v){ST.tail.symmetric=v;document.getElementById('tail-sym-off').classList.toggle('active',!v);document.getElementById('tail-sym-on').classList.toggle('active',v);render();}
 
-// ── WING SLOTS ──
 function buildWingSlots(){
   const c=document.getElementById('wing-slots');c.innerHTML='';
   const ns='http://www.w3.org/2000/svg';
@@ -488,7 +434,7 @@ function buildWingSlots(){
     const grid=document.createElement('div');grid.className='slot-parts-grid';
     WINGS.forEach(p=>{
       const btn=document.createElement('button');btn.className='part-btn'+(slot.wingId===p.id?' selected':'');
-      if(!p.content){btn.innerHTML='<span class="nl">없음</span>';}
+      if(!p.content){btn.innerHTML='<span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--text3)">없음</span>';}
       else{const s=document.createElementNS(ns,'svg');s.setAttribute('viewBox',`${p.vb[0]} ${p.vb[1]} ${p.vb[2]} ${p.vb[3]}`);s.innerHTML=nc(p.content);btn.appendChild(s);}
       btn.onclick=()=>{slot.wingId=p.id;buildWingSlots();render();};grid.appendChild(btn);
     });
@@ -502,14 +448,12 @@ function buildWingSlots(){
     [['한쪽',false],['대칭',true]].forEach(([l,v])=>{const b=document.createElement('button');b.className='tog-btn'+(slot.symmetric===v?' active':'');b.textContent=l;b.onclick=()=>{slot.symmetric=v;buildWingSlots();render();};sg.appendChild(b);});
     sr.appendChild(sg);body.appendChild(sr);wrap.appendChild(body);c.appendChild(wrap);
   });
-  const ab=document.getElementById('add-wing-btn');
-  ab.disabled=wingSlots.length>=3;ab.textContent=wingSlots.length>=3?'날개 최대 3쌍':'+ 날개 추가';
+  const ab=document.getElementById('add-wing-btn');ab.disabled=wingSlots.length>=3;ab.textContent=wingSlots.length>=3?'날개 최대 3쌍':'+ 날개 추가';
 }
 
 function addWingSlot(){if(wingSlots.length>=3)return;wingSlots.push({id:nextSlotId++,wingId:WINGS[1+Math.floor(Math.random()*(WINGS.length-1))].id,x:0,y:-15*wingSlots.length,scale:DWS,rot:0,flip:0,symmetric:false,open:true});buildWingSlots();renderAdjustWings();render();}
 function removeWingSlot(id){wingSlots=wingSlots.filter(s=>s.id!==id);buildWingSlots();renderAdjustWings();render();}
 
-// ── ADJUST ──
 function renderAdjustWings(){
   const a=document.getElementById('adjust-wings-area');if(!a)return;a.innerHTML='';
   wingSlots.forEach((slot,idx)=>{
@@ -526,102 +470,34 @@ function uwc(id,prop,val){val=parseFloat(val);const s=wingSlots.find(s=>s.id===i
 function utc(prop,val){val=parseFloat(val);ST.tail[prop]=val;const el=document.getElementById(`tail-${prop}-val`);if(el)el.textContent=prop==='scale'?val+'%':prop==='rot'?val+'°':val+'';render();}
 function uc(cat,prop,val){val=parseFloat(val);ST[cat][prop]=val;const el=document.getElementById(`${cat}-${prop}-val`);if(el)el.textContent=prop==='scale'?Math.round(val)+'%':prop==='rot'?Math.round(val)+'°':Math.round(val)+'';render();}
 
-// ── RENDER ──
-function rp(pg,def,tr,sz){
-  if(!def||!def.content)return;
+function render(){
   const ns='http://www.w3.org/2000/svg';
-  const o=document.createElementNS(ns,'g');o.setAttribute('transform',tr);
-  const i=document.createElementNS(ns,'g');i.setAttribute('transform',vbt(def.vb,sz));
-  i.innerHTML=nc(def.content);o.appendChild(i);pg.appendChild(o);
-}
-
-function renderTo(ids){
-  const ns='http://www.w3.org/2000/svg';
-  ids.wings.innerHTML='';ids.tail.innerHTML='';ids.frame.innerHTML='';ids.eye.innerHTML='';
+  ['g-wings','g-tail','g-frame','g-eye'].forEach(id=>document.getElementById(id).innerHTML='');
   wingSlots.forEach(slot=>{
     const def=WINGS.find(p=>p.id===slot.wingId);if(!def||!def.content)return;
     const sc=slot.scale/100,flip=slot.flip?-1:1,tx=DTX+slot.x,ty=slot.y;
-    rp(ids.wings,def,`translate(${tx},${ty}) rotate(${slot.rot}) scale(${flip*sc},${sc})`,100);
-    if(slot.symmetric)rp(ids.wings,def,`translate(${-tx},${ty}) rotate(${-slot.rot}) scale(${-flip*sc},${sc})`,100);
+    rp(document.getElementById('g-wings'),def,`translate(${tx},${ty}) rotate(${slot.rot}) scale(${flip*sc},${sc})`,100);
+    if(slot.symmetric)rp(document.getElementById('g-wings'),def,`translate(${-tx},${ty}) rotate(${-slot.rot}) scale(${-flip*sc},${sc})`,100);
   });
   const td=TAILS.find(p=>p.id===ST.tail.id);
-  if(td&&td.content){const t=ST.tail,sc=t.scale/100;rp(ids.tail,td,`translate(${t.x},${t.y}) rotate(${t.rot}) scale(${sc})`,40);if(t.symmetric)rp(ids.tail,td,`translate(${-t.x},${t.y}) rotate(${-t.rot}) scale(${-sc},${sc})`,40);}
-  const fd=FRAMES.find(p=>p.id===ST.frame.id);if(fd&&fd.content)rp(ids.frame,fd,`scale(${ST.frame.scale/100})`,120);
-  const ed=EYES.find(p=>p.id===ST.eye.id);if(ed&&ed.content){const e=ST.eye;rp(ids.eye,ed,`translate(${e.x},${e.y}) rotate(${e.rot}) scale(${e.scale/100})`,50);}
+  if(td&&td.content){const t=ST.tail,sc=t.scale/100;rp(document.getElementById('g-tail'),td,`translate(${t.x},${t.y}) rotate(${t.rot}) scale(${sc})`,40);if(t.symmetric)rp(document.getElementById('g-tail'),td,`translate(${-t.x},${t.y}) rotate(${-t.rot}) scale(${-sc},${sc})`,40);}
+  const fd=FRAMES.find(p=>p.id===ST.frame.id);if(fd&&fd.content)rp(document.getElementById('g-frame'),fd,`scale(${ST.frame.scale/100})`,120);
+  const ed=EYES.find(p=>p.id===ST.eye.id);if(ed&&ed.content){const e=ST.eye;rp(document.getElementById('g-eye'),ed,`translate(${e.x},${e.y}) rotate(${e.rot}) scale(${e.scale/100})`,50);}
 }
 
-function render(){
-  renderTo({
-    wings:document.getElementById('g-wings'),
-    tail:document.getElementById('g-tail'),
-    frame:document.getElementById('g-frame'),
-    eye:document.getElementById('g-eye'),
-  });
-}
+const SK='lk-lounge-v2';
+function saveStorage(){try{localStorage.setItem(SK,JSON.stringify(loungeItems));}catch(e){}}
+function loadStorage(){try{const d=localStorage.getItem(SK);if(d)loungeItems=JSON.parse(d);}catch(e){loungeItems=[];}}
+function updateCount(){const el=document.getElementById('lounge-count');el.textContent=loungeItems.length>0?`(${loungeItems.length})`:''; }
 
-function getSVGInner(){return document.getElementById('stage').innerHTML;}
-
-// ── LOUNGE ──
-function updateLoungeCount(){
-  const el=document.getElementById('lounge-count');
-  el.textContent=loungeItems.length>0?`(${loungeItems.length})`:'';
-}
-
-function openSaveModal(){
-  document.getElementById('creator-name').value='';
-  document.getElementById('save-modal').classList.add('open');
-  setTimeout(()=>document.getElementById('creator-name').focus(),100);
-}
+function openSaveModal(){document.getElementById('creator-name').value='';document.getElementById('save-modal').classList.add('open');setTimeout(()=>document.getElementById('creator-name').focus(),80);}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
 function saveToLounge(){
-  const name=document.getElementById('creator-name').value.trim();
-  if(!name){document.getElementById('creator-name').style.borderColor='var(--red)';return;}
+  const name=document.getElementById('creator-name').value.trim();if(!name)return;
   closeModal('save-modal');
-  const item={
-    id:Date.now(),creator:name,
-    createdAt:new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}),
-    svgInner:getSVGInner(),
-  };
-  loungeItems.unshift(item);
-  saveStorage();
-  updateLoungeCount();
-  renderLounge();
-  goPage('lounge');
-}
-
-function renderLounge(){
-  const grid=document.getElementById('lounge-grid');
-  grid.innerHTML='';
-  document.getElementById('lounge-sub').textContent=
-    loungeItems.length>0?`${loungeItems.length}개의 Lightkeeper가 모여있어요`:'라운지에 저장된 Lightkeeper들을 만나보세요';
-  if(loungeItems.length===0){
-    grid.innerHTML='<div class="lounge-empty">아직 저장된 Lightkeeper가 없어요.<br>Builder에서 캐릭터를 만들고<br>라운지에 저장해보세요!</div>';
-    return;
-  }
-  const ns='http://www.w3.org/2000/svg';
-  loungeItems.forEach(item=>{
-    const card=document.createElement('div');card.className='lounge-card';
-    const cv=document.createElement('div');cv.className='lounge-card-cv';
-    const svg=document.createElementNS(ns,'svg');svg.setAttribute('width','110');svg.setAttribute('height','110');svg.setAttribute('viewBox','-170 -170 340 340');svg.style.overflow='visible';
-    svg.innerHTML=item.svgInner;
-    cv.appendChild(svg);
-    cv.onclick=()=>openViewModal(item);
-    const info=document.createElement('div');info.className='lounge-card-info';
-    info.innerHTML=`<div class="lounge-card-name">${item.creator}의 Lightkeeper</div><div class="lounge-card-date">${item.createdAt}</div>`;
-    const foot=document.createElement('div');foot.className='lounge-card-foot';
-    const del=document.createElement('button');del.className='del-btn';del.textContent='삭제';
-    del.onclick=e=>{e.stopPropagation();deleteItem(item.id);};
-    foot.appendChild(del);
-    card.appendChild(cv);card.appendChild(info);card.appendChild(foot);
-    grid.appendChild(card);
-  });
-}
-
-function deleteItem(id){
-  if(!confirm('이 Lightkeeper를 삭제할까요?'))return;
-  loungeItems=loungeItems.filter(i=>i.id!==id);
-  saveStorage();updateLoungeCount();renderLounge();
+  const item={id:Date.now(),creator:name,createdAt:new Date().toLocaleDateString('ko-KR'),svgInner:document.getElementById('stage').innerHTML};
+  loungeItems.unshift(item);saveStorage();updateCount();goPage('lounge');
 }
 
 function openViewModal(item){
@@ -634,7 +510,7 @@ function openViewModal(item){
 
 function exportFromView(){
   if(!viewingItem)return;
-  const blob=new Blob([`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-170 -170 340 340">${viewingItem.svgInner}</svg>`],{type:'image/svg+xml'});
+  const blob=new Blob([`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-180 -180 360 360">${viewingItem.svgInner}</svg>`],{type:'image/svg+xml'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`lightkeeper-${viewingItem.creator}.svg`;a.click();
 }
 
@@ -651,19 +527,11 @@ function randomize(){
   render();
 }
 
-// modal backdrop click
-['save-modal','view-modal'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeModal(id);});
-});
+['save-modal','view-modal'].forEach(id=>{document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeModal(id);});});
 
-// ── INIT ──
-loadStorage();
-updateLoungeCount();
-buildGrid('frame-grid',FRAMES,'frame');
-buildGrid('eye-grid',EYES,'eye');
-buildGrid('tail-grid',TAILS,'tail');
-buildWingSlots();
-render();
+loadStorage();updateCount();
+buildGrid('frame-grid',FRAMES,'frame');buildGrid('eye-grid',EYES,'eye');buildGrid('tail-grid',TAILS,'tail');
+buildWingSlots();render();
 </script>
 </body>
 </html>
