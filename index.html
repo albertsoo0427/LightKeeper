@@ -9,25 +9,17 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#f5f3ef;
-  --bg2:#eceae4;
-  --bg3:#e2dfd8;
-  --border:#d5d1c8;
-  --border2:#bfbab0;
-  --text:#1c1a17;
-  --text2:#6b6760;
-  --text3:#a09b93;
-  --accent:#1c1a17;
-  --white:#ffffff;
-  --red:#b03020;
-  --sidebar:280px;
-  --nav:52px;
+  --bg:#f5f3ef;--bg2:#eceae4;--bg3:#e2dfd8;
+  --border:#d5d1c8;--border2:#bfbab0;
+  --text:#1c1a17;--text2:#6b6760;--text3:#a09b93;
+  --accent:#1c1a17;--white:#ffffff;--red:#b03020;
+  --sidebar:280px;--nav:52px;
 }
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
 
 /* NAV */
-.nav{height:var(--nav);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);background:var(--bg);position:relative;z-index:20;}
+.nav{height:var(--nav);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);background:var(--bg);z-index:20;}
 .nav-brand{font-size:14px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:baseline;gap:8px;}
 .nav-brand-sub{font-family:'DM Mono',monospace;font-size:10px;font-weight:400;color:var(--text3);letter-spacing:0.06em;text-transform:none;}
 .nav-center{display:flex;gap:2px;}
@@ -38,7 +30,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 .btn{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;padding:7px 16px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;transition:all 0.15s;}
 .btn:hover{background:var(--bg3);}
 .btn-primary{background:var(--accent);color:var(--white);border-color:var(--accent);}
-.btn-primary:hover{opacity:0.82;background:var(--accent);}
+.btn-primary:hover{opacity:0.82;}
 
 /* PAGES */
 .page{display:none;flex:1;overflow:hidden;}
@@ -91,10 +83,30 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 #stage{overflow:visible;position:relative;z-index:1;}
 
 /* LOUNGE */
-.lounge-page{position:relative;width:100%;flex:1;overflow:hidden;background:var(--bg);}
-.lounge-page::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:28px 28px;opacity:0.5;pointer-events:none;}
-#lounge-canvas{position:absolute;inset:0;width:100%;height:100%;}
-.lounge-empty-msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);line-height:2.2;pointer-events:none;}
+.lounge-page{display:flex;flex-direction:column;width:100%;height:100%;}
+.lounge-hdr{flex-shrink:0;padding:20px 28px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;}
+.lounge-title{font-size:20px;font-weight:700;letter-spacing:0.04em;margin-bottom:3px;}
+.lounge-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.05em;}
+.lounge-body{flex:1;overflow-y:auto;padding:24px 28px;}
+.lounge-body::-webkit-scrollbar{width:4px;}
+.lounge-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.lounge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.lounge-empty{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--text3);font-family:'DM Mono',monospace;font-size:11px;line-height:2.2;}
+
+/* 카드 */
+.lounge-card{border:1px solid var(--border);border-radius:10px;background:var(--bg2);overflow:hidden;cursor:pointer;transition:border-color 0.18s, box-shadow 0.18s;display:flex;flex-direction:column;}
+.lounge-card:hover{border-color:var(--border2);box-shadow:0 6px 20px rgba(0,0,0,0.07);}
+.lounge-card-cv{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--bg);border-bottom:1px solid var(--border);overflow:hidden;position:relative;}
+/* 둥둥 float 애니메이션 — 카드마다 다른 위상 */
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.lounge-card-cv svg{overflow:visible;}
+.float-wrap{animation:float var(--dur,3.2s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+.lounge-card-info{padding:10px 12px 4px;}
+.lounge-card-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lounge-card-date{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);}
+.lounge-card-foot{display:flex;justify-content:flex-end;padding:6px 12px 10px;}
+.del-btn{font-family:'DM Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid transparent;border-radius:3px;background:transparent;cursor:pointer;color:var(--text3);transition:all 0.12s;}
+.del-btn:hover{color:var(--red);border-color:var(--red);}
 
 /* MODALS */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(28,26,23,0.4);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;}
@@ -116,7 +128,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
   <div class="nav-brand">LightKeeper<span class="nav-brand-sub">Character Builder</span></div>
   <div class="nav-center">
     <button class="nav-tab active" onclick="goPage('builder')">Builder</button>
-    <button class="nav-tab" onclick="goPage('lounge')">Lounge <span id="lounge-count" style="font-size:10px;opacity:0.5;"></span></button>
+    <button class="nav-tab" onclick="goPage('lounge')">Lounge <span id="lounge-count" style="font-size:10px;opacity:0.5;font-family:'DM Mono',monospace;"></span></button>
   </div>
   <div class="nav-right">
     <button class="btn" onclick="randomize()">랜덤</button>
@@ -172,15 +184,22 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 <!-- LOUNGE -->
 <div class="page" id="page-lounge">
   <div class="lounge-page">
-    <canvas id="lounge-canvas"></canvas>
-    <div class="lounge-empty-msg" id="lounge-empty">아직 저장된 Lightkeeper가 없어요.<br>Builder에서 캐릭터를 만들고 라운지에 저장해보세요!</div>
+    <div class="lounge-hdr">
+      <div>
+        <div class="lounge-title">Lightkeeper Lounge</div>
+        <div class="lounge-sub" id="lounge-sub">라운지에 저장된 Lightkeeper들을 만나보세요</div>
+      </div>
+    </div>
+    <div class="lounge-body">
+      <div class="lounge-grid" id="lounge-grid"></div>
+    </div>
   </div>
 </div>
 
 <!-- SAVE MODAL -->
 <div class="modal-bg" id="save-modal">
   <div class="modal">
-    <div><div class="modal-title">라운지에 저장하기</div><div class="modal-desc" style="margin-top:6px;">이름을 입력하면 라운지에서 날아다녀요.</div></div>
+    <div><div class="modal-title">라운지에 저장하기</div><div class="modal-desc" style="margin-top:6px;">만든 사람의 이름을 입력하면<br>라운지에 저장됩니다.</div></div>
     <input type="text" id="creator-name" placeholder="이름을 입력하세요" maxlength="20" onkeydown="if(event.key==='Enter')saveToLounge()"/>
     <div class="modal-actions"><button class="btn" onclick="closeModal('save-modal')">취소</button><button class="btn btn-primary" onclick="saveToLounge()">저장하기</button></div>
   </div>
@@ -254,8 +273,6 @@ let wingSlots=[{id:0,wingId:'wing_07',x:0,y:0,scale:DWS,rot:0,flip:0,symmetric:f
 let nextSlotId=1;
 const ST={frame:{id:'frame_02',scale:100},eye:{id:'eye_02',x:0,y:0,scale:100,rot:0},tail:{id:'none',x:0,y:55,scale:100,rot:0,symmetric:false}};
 let loungeItems=[];
-let loungeRAF=null;
-let loungeAgents=[];
 let viewingItem=null;
 
 function rp(pg,def,tr,sz){
@@ -266,136 +283,18 @@ function rp(pg,def,tr,sz){
   i.innerHTML=nc(def.content);o.appendChild(i);pg.appendChild(o);
 }
 
-// 날개 펄럭 SVG 생성: g-wings에만 scaleY 적용
-function makeFlapSVG(svgInner,flapT){
-  const sy=(1.0-flapT*0.88).toFixed(4);
-  return svgInner.replace(
-    /(<g id="g-wings">)([\s\S]*?)(<\/g>)/,
-    (_,open,inner)=>`<g id="g-wings"><g transform="scale(1,${sy})">${inner}</g></g>`
-  );
-}
-
-const FRAME_COUNT=16;
-const BAKE_SIZE=280;
-
-function prebakeAgent(agent){
-  const imgs=new Array(FRAME_COUNT).fill(null);
-  let loaded=0;
-  for(let fi=0;fi<FRAME_COUNT;fi++){
-    const t=(1-Math.cos(fi/FRAME_COUNT*Math.PI*2))/2;
-    const inner=makeFlapSVG(agent.item.svgInner,t);
-    const svgStr=`<svg xmlns="http://www.w3.org/2000/svg" width="${BAKE_SIZE}" height="${BAKE_SIZE}" viewBox="-200 -200 400 400">${inner}</svg>`;
-    const blob=new Blob([svgStr],{type:'image/svg+xml'});
-    const url=URL.createObjectURL(blob);
-    const img=new Image();
-    const idx=fi;
-    img.onload=()=>{URL.revokeObjectURL(url);imgs[idx]=img;if(++loaded===FRAME_COUNT){agent.frames=imgs;agent.ready=true;}};
-    img.onerror=()=>{URL.revokeObjectURL(url);if(++loaded===FRAME_COUNT){agent.frames=imgs;agent.ready=true;}};
-    img.src=url;
-  }
-}
-
-function createAgent(item,cw,ch){
-  const sz=150;
-  const spd=0.32+Math.random()*0.42;
-  const ang=Math.random()*Math.PI*2;
-  return {
-    item,sz,
-    x:sz+Math.random()*(cw-sz*2),
-    y:sz+Math.random()*(ch-sz*2),
-    angle:ang,speed:spd,
-    turnRate:(Math.random()-0.5)*0.007,
-    wobble:Math.random()*Math.PI*2,
-    floatFreq:0.0005+Math.random()*0.0004,
-    floatAmp:6+Math.random()*7,
-    floatPhase:Math.random()*Math.PI*2,
-    flapFreq:0.003+Math.random()*0.0018,
-    flapPhase:Math.random()*Math.PI*2,
-    frames:[],ready:false,
-  };
-}
-
-function startLounge(){
-  const canvas=document.getElementById('lounge-canvas');
-  const emptyMsg=document.getElementById('lounge-empty');
-  if(!canvas)return;
-  const parent=canvas.parentElement;
-  const cw=parent.clientWidth||800;
-  const ch=parent.clientHeight||520;
-  canvas.width=cw;canvas.height=ch;
-  if(loungeItems.length===0){emptyMsg.style.display='block';stopLounge();return;}
-  emptyMsg.style.display='none';
-  loungeAgents=loungeItems.map(item=>createAgent(item,cw,ch));
-  loungeAgents.forEach(a=>prebakeAgent(a));
-  const cs=getComputedStyle(document.body);
-  const fg=cs.color||'#1c1a17';
-  const bg=cs.backgroundColor||'#f5f3ef';
-  const ctx=canvas.getContext('2d');
-  function loop(ts){
-    ctx.clearRect(0,0,cw,ch);
-    loungeAgents.forEach(a=>{
-      const fy=Math.sin(ts*a.floatFreq+a.floatPhase)*a.floatAmp;
-      a.angle+=a.turnRate+Math.sin(ts*0.00022+a.wobble)*0.003;
-      a.x+=Math.cos(a.angle)*a.speed;
-      a.y+=Math.sin(a.angle)*a.speed;
-      const M=a.sz*0.9;
-      if(a.x<-M)a.x=cw+M;if(a.x>cw+M)a.x=-M;
-      if(a.y<-M)a.y=ch+M;if(a.y>ch+M)a.y=-M;
-      ctx.save();ctx.translate(a.x,a.y+fy);
-      if(a.ready&&a.frames.length){
-        const phase=(Math.sin(ts*a.flapFreq+a.flapPhase)+1)/2;
-        const fi=Math.floor(phase*FRAME_COUNT)%FRAME_COUNT;
-        const img=a.frames[fi];
-        if(img){
-          const sc=a.sz/BAKE_SIZE;
-          ctx.drawImage(img,-BAKE_SIZE*sc/2,-BAKE_SIZE*sc/2,BAKE_SIZE*sc,BAKE_SIZE*sc);
-        }
-      }else{
-        ctx.beginPath();ctx.arc(0,0,28,0,Math.PI*2);
-        ctx.fillStyle=fg+'22';ctx.fill();
-      }
-      const name=a.item.creator;
-      ctx.font=`600 11px 'Syne',sans-serif`;
-      const tw=ctx.measureText(name).width;
-      const pH=20,pPx=10,pW=tw+pPx*2;
-      const pX=-pW/2,pY=a.sz*0.44;
-      ctx.beginPath();ctx.roundRect(pX,pY,pW,pH,pH/2);
-      ctx.fillStyle=fg;ctx.fill();
-      ctx.fillStyle=bg;ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText(name,0,pY+pH/2);
-      ctx.restore();
-    });
-    loungeRAF=requestAnimationFrame(loop);
-  }
-  stopLounge();
-  loungeRAF=requestAnimationFrame(loop);
-  canvas.onclick=(e)=>{
-    const rect=canvas.getBoundingClientRect();
-    const mx=e.clientX-rect.left,my=e.clientY-rect.top;
-    for(const a of loungeAgents){
-      if(Math.abs(mx-a.x)<a.sz/2&&Math.abs(my-a.y)<a.sz/2){openViewModal(a.item);break;}
-    }
-  };
-}
-
-function stopLounge(){
-  if(loungeRAF){cancelAnimationFrame(loungeRAF);loungeRAF=null;}
-  const c=document.getElementById('lounge-canvas');if(c)c.onclick=null;
-}
-
 function goPage(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
-  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.nav-tab')[p==='builder'?0:1].classList.add('active');
-  if(p==='lounge')startLounge();else stopLounge();
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',[p==='builder',p==='lounge'][i]));
+  if(p==='lounge') renderLounge();
 }
 
 function switchTab(t){
   document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('active',b.textContent.includes(t==='parts'?'파츠':'위치')));
   document.querySelectorAll('.ctrl-section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
-  if(t==='adjust')renderAdjustWings();
+  if(t==='adjust') renderAdjustWings();
 }
 
 function buildGrid(gId,parts,cat){
@@ -405,7 +304,7 @@ function buildGrid(gId,parts,cat){
   parts.forEach(p=>{
     const btn=document.createElement('button');
     btn.className='part-btn'+(ST[cat]&&ST[cat].id===p.id?' selected':'');
-    if(!p.content){btn.innerHTML='<span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--text3)">없음</span>';}
+    if(!p.content){btn.innerHTML='<span style="font-family:\'DM Mono\',monospace;font-size:8px;color:#a09b93">없음</span>';}
     else{const s=document.createElementNS(ns,'svg');s.setAttribute('viewBox',`${p.vb[0]} ${p.vb[1]} ${p.vb[2]} ${p.vb[3]}`);s.innerHTML=nc(p.content);btn.appendChild(s);}
     btn.onclick=()=>{
       ST[cat].id=p.id;buildGrid(gId,parts,cat);
@@ -434,7 +333,7 @@ function buildWingSlots(){
     const grid=document.createElement('div');grid.className='slot-parts-grid';
     WINGS.forEach(p=>{
       const btn=document.createElement('button');btn.className='part-btn'+(slot.wingId===p.id?' selected':'');
-      if(!p.content){btn.innerHTML='<span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--text3)">없음</span>';}
+      if(!p.content){btn.innerHTML='<span style="font-family:\'DM Mono\',monospace;font-size:8px;color:#a09b93">없음</span>';}
       else{const s=document.createElementNS(ns,'svg');s.setAttribute('viewBox',`${p.vb[0]} ${p.vb[1]} ${p.vb[2]} ${p.vb[3]}`);s.innerHTML=nc(p.content);btn.appendChild(s);}
       btn.onclick=()=>{slot.wingId=p.id;buildWingSlots();render();};grid.appendChild(btn);
     });
@@ -485,19 +384,57 @@ function render(){
   const ed=EYES.find(p=>p.id===ST.eye.id);if(ed&&ed.content){const e=ST.eye;rp(document.getElementById('g-eye'),ed,`translate(${e.x},${e.y}) rotate(${e.rot}) scale(${e.scale/100})`,50);}
 }
 
-const SK='lk-lounge-v2';
-function saveStorage(){try{localStorage.setItem(SK,JSON.stringify(loungeItems));}catch(e){}}
-function loadStorage(){try{const d=localStorage.getItem(SK);if(d)loungeItems=JSON.parse(d);}catch(e){loungeItems=[];}}
-function updateCount(){const el=document.getElementById('lounge-count');el.textContent=loungeItems.length>0?`(${loungeItems.length})`:''; }
+// ── LOUNGE ──
+function renderLounge(){
+  const grid=document.getElementById('lounge-grid');
+  grid.innerHTML='';
+  document.getElementById('lounge-sub').textContent=
+    loungeItems.length>0?`${loungeItems.length}개의 Lightkeeper가 모여있어요`:'라운지에 저장된 Lightkeeper들을 만나보세요';
+  if(loungeItems.length===0){
+    grid.innerHTML='<div class="lounge-empty">아직 저장된 Lightkeeper가 없어요.<br>Builder에서 캐릭터를 만들고 라운지에 저장해보세요!</div>';
+    return;
+  }
+  const ns='http://www.w3.org/2000/svg';
+  // 카드마다 float 속도/위상 랜덤
+  const durations=[3.0,3.4,3.8,4.2,2.8,3.6,4.0,3.2];
+  const delays=[0,0.6,1.2,0.3,1.8,0.9,0.4,1.5];
+  loungeItems.forEach((item,idx)=>{
+    const card=document.createElement('div');card.className='lounge-card';
 
-function openSaveModal(){document.getElementById('creator-name').value='';document.getElementById('save-modal').classList.add('open');setTimeout(()=>document.getElementById('creator-name').focus(),80);}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
+    // 캐릭터 캔버스
+    const cv=document.createElement('div');cv.className='lounge-card-cv';
+    const floatWrap=document.createElement('div');floatWrap.className='float-wrap';
+    const dur=durations[idx%durations.length];
+    const delay=delays[idx%delays.length];
+    floatWrap.style.setProperty('--dur',`${dur}s`);
+    floatWrap.style.setProperty('--delay',`${delay}s`);
+    const svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('width','140');svg.setAttribute('height','140');
+    svg.setAttribute('viewBox','-180 -180 360 360');
+    svg.style.overflow='visible';
+    svg.innerHTML=item.svgInner;
+    floatWrap.appendChild(svg);
+    cv.appendChild(floatWrap);
+    cv.onclick=()=>openViewModal(item);
 
-function saveToLounge(){
-  const name=document.getElementById('creator-name').value.trim();if(!name)return;
-  closeModal('save-modal');
-  const item={id:Date.now(),creator:name,createdAt:new Date().toLocaleDateString('ko-KR'),svgInner:document.getElementById('stage').innerHTML};
-  loungeItems.unshift(item);saveStorage();updateCount();goPage('lounge');
+    // 정보
+    const info=document.createElement('div');info.className='lounge-card-info';
+    info.innerHTML=`<div class="lounge-card-name">${item.creator}의 Lightkeeper</div><div class="lounge-card-date">${item.createdAt}</div>`;
+
+    // 삭제 버튼
+    const foot=document.createElement('div');foot.className='lounge-card-foot';
+    const del=document.createElement('button');del.className='del-btn';del.textContent='삭제';
+    del.onclick=e=>{e.stopPropagation();if(confirm('이 Lightkeeper를 삭제할까요?')){deleteItem(item.id);}};
+    foot.appendChild(del);
+
+    card.appendChild(cv);card.appendChild(info);card.appendChild(foot);
+    grid.appendChild(card);
+  });
+}
+
+function deleteItem(id){
+  loungeItems=loungeItems.filter(i=>i.id!==id);
+  saveStorage();updateCount();renderLounge();
 }
 
 function openViewModal(item){
@@ -512,6 +449,22 @@ function exportFromView(){
   if(!viewingItem)return;
   const blob=new Blob([`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-180 -180 360 360">${viewingItem.svgInner}</svg>`],{type:'image/svg+xml'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`lightkeeper-${viewingItem.creator}.svg`;a.click();
+}
+
+// ── 저장/로드 ──
+const SK='lk-lounge-v2';
+function saveStorage(){try{localStorage.setItem(SK,JSON.stringify(loungeItems));}catch(e){}}
+function loadStorage(){try{const d=localStorage.getItem(SK);if(d)loungeItems=JSON.parse(d);}catch(e){loungeItems=[];}}
+function updateCount(){const el=document.getElementById('lounge-count');el.textContent=loungeItems.length>0?`(${loungeItems.length})`:''; }
+
+function openSaveModal(){document.getElementById('creator-name').value='';document.getElementById('save-modal').classList.add('open');setTimeout(()=>document.getElementById('creator-name').focus(),80);}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+function saveToLounge(){
+  const name=document.getElementById('creator-name').value.trim();if(!name)return;
+  closeModal('save-modal');
+  const item={id:Date.now(),creator:name,createdAt:new Date().toLocaleDateString('ko-KR'),svgInner:document.getElementById('stage').innerHTML};
+  loungeItems.unshift(item);saveStorage();updateCount();renderLounge();goPage('lounge');
 }
 
 function randomize(){
