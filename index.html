@@ -655,12 +655,6 @@ function pickPart(svgX,svgY){
   let best=null,bestD=Infinity;
   const THRESHOLD=80*80;
 
-  // frame
-  if(ST.frame.id!=='none'){
-    const c={x:0,y:0};
-    const d=dist2(svgX,svgY,c.x,c.y);
-    if(d<bestD&&d<THRESHOLD*4){bestD=d;best={cat:'frame',slotId:null};}
-  }
   // eye
   if(ST.eye.id!=='none'){
     const c={x:ST.eye.x,y:ST.eye.y};
@@ -687,7 +681,7 @@ function onMouseDown(evt){
   if(evt.button!==0) return;
   const pt=svgPoint(evt);
   const hit=pickPart(pt.x,pt.y);
-  if(!hit) return;
+  if(!hit || hit.cat==='frame') return;
   drag.active=true;
   drag.cat=hit.cat;
   drag.slotId=hit.slotId;
