@@ -132,6 +132,105 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
 .view-modal{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:36px;display:flex;flex-direction:column;align-items:center;gap:20px;box-shadow:0 24px 64px rgba(0,0,0,0.15);}
 .view-modal-name{font-size:16px;font-weight:700;}
 .view-modal-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);}
+
+/* ── 모바일 (≤600px) ── */
+@media (max-width:600px){
+
+  /* NAV */
+  .nav{padding:0 14px;}
+  .nav-brand-sub{display:none;}
+  .nav-right .btn:first-child{display:none;} /* 랜덤 버튼 숨김 */
+  .btn-primary{font-size:11px;padding:6px 11px;}
+  .nav-tab{font-size:10px;padding:5px 10px;}
+
+  /* BUILDER: 사이드바 숨기고 캔버스 전체 너비 */
+  .builder{flex-direction:column;position:relative;}
+  .sidebar{
+    display:none; /* JS로 바텀시트로 전환 */
+  }
+  .canvas-area{
+    flex:1;
+    width:100%;
+    min-height:0;
+    padding-bottom:64px; /* 바텀탭바 높이만큼 여백 */
+  }
+  .canvas-hint{bottom:74px;font-size:9px;}
+
+  /* 바텀 탭바 */
+  .mob-tabbar{
+    display:flex;
+    position:fixed;
+    bottom:0;left:0;right:0;
+    height:56px;
+    background:var(--bg);
+    border-top:1px solid var(--border);
+    z-index:50;
+  }
+  .mob-tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;border:none;background:transparent;cursor:pointer;
+    font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.08em;
+    color:var(--text3);text-transform:uppercase;transition:color 0.15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mob-tab.active{color:var(--accent);}
+  .mob-tab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* 바텀시트 */
+  .mob-sheet{
+    display:block;
+    position:fixed;
+    bottom:56px;left:0;right:0;
+    height:0;
+    background:var(--bg2);
+    border-top:1px solid var(--border);
+    border-radius:16px 16px 0 0;
+    z-index:40;
+    overflow:hidden;
+    transition:height 0.3s cubic-bezier(0.32,0.72,0,1);
+  }
+  .mob-sheet.open{height:60vh;}
+  .mob-sheet-handle{
+    width:36px;height:4px;background:var(--border2);border-radius:2px;
+    margin:10px auto 6px;
+  }
+  .mob-sheet-inner{
+    height:calc(60vh - 24px);
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .mob-sheet-inner::-webkit-scrollbar{display:none;}
+
+  /* 바텀시트 안의 사이드바 내용 */
+  .mob-sheet .tab-row{background:var(--bg2);}
+  .mob-sheet .category{padding:10px 14px;}
+  .mob-sheet .parts-grid{grid-template-columns:repeat(5,1fr);gap:6px;}
+  .mob-sheet .slot-parts-grid{grid-template-columns:repeat(5,1fr);}
+  .mob-sheet .part-btn{min-height:44px;}
+  .mob-sheet .ctrl-row input[type=range]{height:28px;} /* 터치 타겟 */
+  .mob-sheet .ctrl-lbl{font-size:10px;width:30px;}
+  .mob-sheet .ctrl-val{font-size:10px;}
+  .mob-sheet .tog-btn{padding:7px 5px;font-size:9px;min-height:36px;}
+  .mob-sheet .slot-btn{padding:5px 10px;font-size:9px;min-height:32px;}
+  .mob-sheet .add-wing-btn{padding:11px;min-height:44px;}
+
+  /* 모달 모바일 */
+  .modal{width:calc(100vw - 32px);padding:22px;}
+  .view-modal{width:calc(100vw - 32px);padding:24px;}
+
+  /* 라운지 */
+  .lounge-hdr{padding:14px 16px 12px;}
+  .lounge-title{font-size:16px;}
+  .lounge-body{padding:14px 16px;}
+  .lounge-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+
+}
+
+/* 바텀탭바/시트는 데스크탑에서 숨김 */
+@media (min-width:601px){
+  .mob-tabbar{display:none;}
+  .mob-sheet{display:none;}
+}
 </style>
 </head>
 <body>
@@ -213,7 +312,6 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);displa
         <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="30" max="160" value="100" step="1" oninput="uc('eye','scale',this.value)"/><span class="ctrl-val" id="eye-scale-val">100%</span></div>
         <div class="ctrl-row"><span class="ctrl-lbl">회전</span><input type="range" min="-180" max="180" value="0" step="1" oninput="uc('eye','rot',this.value)"/><span class="ctrl-val" id="eye-rot-val">0°</span></div>
       </div>
-      <div id="adjust-wings-area"></div>
       <div class="ctrl-group" id="adjust-tail-area" style="display:none;">
         <div class="cat-label" style="margin-bottom:8px;">Tail</div>
         <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="30" max="300" value="100" step="1" oninput="utc('scale',this.value)"/><span class="ctrl-val" id="tail-scale-val">100%</span></div>
@@ -869,17 +967,27 @@ function removeWingSlot(id){wingSlots=wingSlots.filter(s=>s.id!==id);buildWingSl
 
 // ── 조정 탭 (크기·회전만) ──
 function renderAdjustWings(){
-  const a=document.getElementById('adjust-wings-area');if(!a)return;a.innerHTML='';
-  // 꼬리 선택 상태에 따라 adjust-tail-area 표시 동기화
+  // 기존 Wing 슬롯 div들만 제거 (tail area는 건드리지 않음)
+  document.querySelectorAll('.adjust-wing-group').forEach(el=>el.remove());
+
+  const ta=document.getElementById('adjust-tail-area');
   const tailSelected=ST.tail&&ST.tail.id&&ST.tail.id!=='none';
-  const ta=document.getElementById('adjust-tail-area');if(ta)ta.style.display=tailSelected?'block':'none';
+  if(ta) ta.style.display=tailSelected?'block':'none';
   const tr=document.getElementById('tail-sym-row');if(tr)tr.style.display=tailSelected?'block':'none';
-  wingSlots.forEach((slot,idx)=>{
-    const g=document.createElement('div');g.className='ctrl-group';
+
+  // adjust-tail-area 바로 앞에 Wing 슬롯들을 역순으로 삽입
+  const parent=ta?ta.parentNode:document.getElementById('tab-adjust');
+  if(!parent)return;
+  const anchor=ta||null;
+  // 역순 삽입으로 Wing1이 위, Wing2가 아래 순서 유지
+  [...wingSlots].reverse().forEach((slot,ri)=>{
+    const idx=wingSlots.length-1-ri;
+    const g=document.createElement('div');
+    g.className='ctrl-group adjust-wing-group';
     g.innerHTML=`<div class="cat-label" style="margin-bottom:8px;">Wing ${idx+1}</div>
     <div class="ctrl-row"><span class="ctrl-lbl">크기</span><input type="range" min="40" max="250" value="${slot.scale}" step="1" oninput="uwc(${slot.id},'scale',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-scale">${slot.scale}%</span></div>
     <div class="ctrl-row"><span class="ctrl-lbl">회전</span><input type="range" min="-180" max="180" value="${slot.rot}" step="1" oninput="uwc(${slot.id},'rot',this.value)"/><span class="ctrl-val" id="wc-${slot.id}-rot">${slot.rot}°</span></div>`;
-    a.appendChild(g);
+    parent.insertBefore(g, anchor);
   });
 }
 function uwc(id,prop,val){val=parseFloat(val);const s=wingSlots.find(s=>s.id===id);if(!s)return;s[prop]=val;const el=document.getElementById(`wc-${id}-${prop}`);if(el)el.textContent=prop==='scale'?val+'%':prop==='rot'?val+'°':val+'';render();}
@@ -1015,6 +1123,112 @@ buildGrid('frame-grid',FRAMES,'frame');
 buildGrid('eye-grid',EYES,'eye');
 buildGrid('tail-grid',TAILS,'tail');
 buildWingSlots();render();
+</script>
+<script>
+// ── 모바일 바텀시트 ──
+(function(){
+  if(window.innerWidth > 600) return;
+
+  // 바텀탭바 생성
+  const tabbar = document.createElement('div');
+  tabbar.className = 'mob-tabbar';
+  tabbar.innerHTML = `
+    <button class="mob-tab active" id="mob-tab-parts" onclick="mobTab('parts')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      파츠
+    </button>
+    <button class="mob-tab" id="mob-tab-adjust" onclick="mobTab('adjust')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+      조정
+    </button>
+    <button class="mob-tab" id="mob-tab-lounge" onclick="goPage('lounge');closeMobSheet();">
+      <svg viewBox="0 0 24 24"><path d="M4 19V8a2 2 0 012-2h12a2 2 0 012 2v11M4 19h16M4 19l-1 2M20 19l1 2"/><path d="M9 11h6M9 15h4"/></svg>
+      라운지
+    </button>
+    <button class="mob-tab" id="mob-tab-save" onclick="openSaveModal()">
+      <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      저장
+    </button>
+  `;
+  document.body.appendChild(tabbar);
+
+  // 바텀시트 생성 (사이드바 내용을 담을 컨테이너)
+  const sheet = document.createElement('div');
+  sheet.className = 'mob-sheet';
+  sheet.id = 'mob-sheet';
+  sheet.innerHTML = '<div class="mob-sheet-handle"></div><div class="mob-sheet-inner" id="mob-sheet-inner"></div>';
+  document.body.appendChild(sheet);
+
+  // 사이드바 내용을 시트로 이동
+  const sidebar = document.querySelector('.sidebar');
+  const sheetInner = document.getElementById('mob-sheet-inner');
+  sheetInner.appendChild(sidebar);
+  sidebar.style.display = 'flex';
+  sidebar.style.width = '100%';
+  sidebar.style.height = '100%';
+  sidebar.style.borderRight = 'none';
+  sidebar.style.overflow = 'visible';
+
+  // 시트 핸들 스와이프로 닫기
+  let startY = 0;
+  sheet.querySelector('.mob-sheet-handle').addEventListener('touchstart', e=>{startY=e.touches[0].clientY;},{passive:true});
+  sheet.querySelector('.mob-sheet-handle').addEventListener('touchend', e=>{
+    if(e.changedTouches[0].clientY - startY > 40) closeMobSheet();
+  },{passive:true});
+
+  // 탭 외부 터치로 시트 닫기
+  document.getElementById('canvas-area').addEventListener('touchstart', ()=>closeMobSheet(), {passive:true});
+
+  window._mobSheetOpen = false;
+  window._mobActiveTab = 'parts';
+})();
+
+function mobTab(tab){
+  if(window.innerWidth > 600) return;
+  const sheet = document.getElementById('mob-sheet');
+  if(!sheet) return;
+
+  // 같은 탭 다시 누르면 토글
+  if(window._mobActiveTab === tab && window._mobSheetOpen){
+    closeMobSheet(); return;
+  }
+  window._mobActiveTab = tab;
+  window._mobSheetOpen = true;
+
+  // 탭 활성화 표시
+  document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('active'));
+  const el = document.getElementById('mob-tab-'+tab);
+  if(el) el.classList.add('active');
+
+  // 사이드바 탭 전환
+  switchTab(tab);
+
+  // 시트 열기
+  sheet.classList.add('open');
+  goPage('builder');
+}
+
+function closeMobSheet(){
+  const sheet = document.getElementById('mob-sheet');
+  if(sheet){ sheet.classList.remove('open'); window._mobSheetOpen = false; }
+}
+
+// goPage 확장: 라운지로 가면 시트 닫기
+const _origGoPage = goPage;
+window.goPage = function(p){
+  _origGoPage(p);
+  if(p==='lounge') closeMobSheet();
+  if(window.innerWidth <= 600){
+    document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('active'));
+    if(p==='builder'){
+      const el = document.getElementById('mob-tab-'+(window._mobActiveTab||'parts'));
+      if(el) el.classList.add('active');
+    } else {
+      const el = document.getElementById('mob-tab-lounge');
+      if(el) el.classList.add('active');
+    }
+  }
+};
 </script>
 </body>
 </html>
